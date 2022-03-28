@@ -9,12 +9,13 @@ int screen_height = 40;
 
 float player_x = 0.0f;
 float player_y = 0.0f;
-float player_ang = 0.0f;
+float player_ang = 0.0f; // 지도상 플레이어 시선의 각도.
 
 
 int map_height = 16;
 int map_width = 16;
 
+float fov = 3.141592 / 4.0; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
 
 int main()
 {
@@ -47,6 +48,15 @@ int main()
 
     while (1)
     {
+
+        for (int x = 0; x < screen_width; x++)
+        {
+            float ray_angle = ( player_ang - fov / 2.0f ) + ( static_cast<float>(x) / static_cast<float>(screen_width) ) * fov;
+            // ( player_ang - fov / 2.0f ) : ray_angle의 시작. 
+            // fov를 스크린 넓이 수만큼 나눈 것. 즉, 그림 안에 들어오는 각도 ray_angle은 -fov/2 부터 fov/2까지이다. 
+        }
+
+
         screen[screen_width * screen_height - 1] = L'\0'; // '\0'
         WriteConsoleOutputCharacter(console, screen, screen_width * screen_height, { 0, 0 }, &bytes_written);
         // WriteConsoleOutputCharacter : 문자를 출력한다.
