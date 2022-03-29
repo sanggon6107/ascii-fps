@@ -50,10 +50,23 @@ int main()
     {
 
         for (int x = 0; x < screen_width; x++)
-        {
+        {   // 플레이어의 시각을 촘촘하게 잘라서, 각 각도별로 벽에 닿을 때까지의 거리를 계산한다.
             float ray_angle = ( player_ang - fov / 2.0f ) + ( static_cast<float>(x) / static_cast<float>(screen_width) ) * fov;
             // ( player_ang - fov / 2.0f ) : ray_angle의 시작. 
             // fov를 스크린 넓이 수만큼 나눈 것. 즉, 그림 안에 들어오는 각도 ray_angle은 -fov/2 부터 fov/2까지이다. 
+
+            float distance_to_wall = 0;
+            bool hit_wall = false;
+
+            float eye_x = sinf(ray_angle);
+            float eye_y = cosf(ray_angle);
+
+
+            while (!hit_wall)
+            {
+                distance_to_wall += 0.1f;
+            }
+
         }
 
 
