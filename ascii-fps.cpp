@@ -16,6 +16,7 @@ int map_height = 16;
 int map_width = 16;
 
 float fov = 3.141592 / 4.0; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
+float depth = 16.0f; // 앞에 벽이 있는지 확인하기 위한 최대 깊이.
 
 int main()
 {
@@ -58,14 +59,37 @@ int main()
             float distance_to_wall = 0;
             bool hit_wall = false;
 
-            float eye_x = sinf(ray_angle);
+            float eye_x = sinf(ray_angle); // 단위 벡터.
             float eye_y = cosf(ray_angle);
 
 
-            while (!hit_wall)
+            while (!hit_wall && distance_to_wall < depth)
             {
                 distance_to_wall += 0.1f;
+
+                int test_x = (int)(player_x + eye_x * distance_to_wall);
+                int test_y = (int)(player_y + eye_y * distance_to_wall);
+
+                if (test_x < 0 || test_x >= map_width || test_y < 0 || test_y >= map_height) // test_x (테스트 지점)이 맵 바깥에 있는 경우
+                {
+                    hit_wall = true;
+                    distance_to_wall = depth; // distance_to_wall은 그냥 최대.
+                }
+                else // test_x (테스트 지점)이 맵 안에 있는 경우 그 지점이 벽인지 아닌지 판단한다.
+                {
+                    if (std::to_string(map[test_y * map_width + test_x]) == "#") // (x, y)가 벽이라면
+                    {
+                        hit_wall = true;
+                    }
+                }
             }
+
+            // 바닥, 천장까지의 거리 계산. distance_to_wall이 길어질 수록 시야상 벽이 작아보이고, 천장과 바닥이 많이 보인다.
+            
+            int ceiling = (float)(screen_height / 2, 0) - screen_height / (float)distance_to_wall;
+            int floor = screen_height - ceiling; // 바닥은 그냥 천장을 반대로
+
+
 
         }
 
