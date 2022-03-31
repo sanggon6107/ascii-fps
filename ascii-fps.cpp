@@ -7,8 +7,8 @@ int screen_width = 120;
 int screen_height = 40;
 
 
-float player_x = 0.0f;
-float player_y = 0.0f;
+float player_x = 8.0f;
+float player_y = 8.0f;
 float player_ang = 0.0f; // 지도상 플레이어 시선의 각도.
 
 
@@ -44,14 +44,28 @@ int main()
     map += L"#..............#";
     map += L"#..............#";
     map += L"#..............#";
-    map += L"#..............#";
+    map += L"################";
 
 
     while (1)
     {
+        // 조작부
+
+        if (GetAsyncKeyState((unsigned short)'A') & 0x8000)
+        {
+            player_ang -= (0.001f);
+        }
+
+        if (GetAsyncKeyState((unsigned short)'D') & 0x8000)
+        {
+            player_ang += (0.001f);
+        }
+
+
+
 
         for (int x = 0; x < screen_width; x++)
-        {   // 플레이어의 시각을 촘촘하게 잘라서, 각 각도별로 벽에 닿을 때까지의 거리를 계산한다.
+        {   // 플레이어의 시각을 촘촘하게 잘라서, 각 각도별로 벽에 닿을 때까지의 거리를 계산한다. (화면의 가로 길이가 120이므로, 화면의 x를 120개로 나눈다.)
             float ray_angle = ( player_ang - fov / 2.0f ) + ( static_cast<float>(x) / static_cast<float>(screen_width) ) * fov;
             // ( player_ang - fov / 2.0f ) : ray_angle의 시작. 
             // fov를 스크린 넓이 수만큼 나눈 것. 즉, 그림 안에 들어오는 각도 ray_angle은 -fov/2 부터 fov/2까지이다. 
@@ -59,7 +73,7 @@ int main()
             float distance_to_wall = 0;
             bool hit_wall = false;
 
-            float eye_x = sinf(ray_angle); // 단위 벡터.
+            float eye_x = sinf(ray_angle); // 각 각도의 단위 벡터.
             float eye_y = cosf(ray_angle);
 
 
@@ -77,7 +91,7 @@ int main()
                 }
                 else // test_x (테스트 지점)이 맵 안에 있는 경우 그 지점이 벽인지 아닌지 판단한다.
                 {
-                    if (std::to_string(map[test_y * map_width + test_x]) == "#") // (x, y)가 벽이라면
+                    if (map[test_y * map_width + test_x] == '#') // (x, y)가 벽이라면
                     {
                         hit_wall = true;
                     }
@@ -86,15 +100,31 @@ int main()
 
             // 바닥, 천장까지의 거리 계산. distance_to_wall이 길어질 수록 시야상 벽이 작아보이고, 천장과 바닥이 많이 보인다.
             
-            int ceiling = (float)(screen_height / 2, 0) - screen_height / (float)distance_to_wall;
+            int ceiling = (float)(screen_height / 2.0) - screen_height / (float)distance_to_wall;
             int floor = screen_height - ceiling; // 바닥은 그냥 천장을 반대로
+            
+            for (int y = 0; y < screen_height; y++)
+            {
+                if (y < ceiling) // sky
+                {
+                    screen[y * screen_width + x] = ' ';
+                }
+                else if(y > floor) // 바닥 경계선보다 y가 크다 = 시야상 바닥. 
+                {
+                    screen[y * screen_width + x] = ' ';
+                }
+                else // wall
+                {
+                    screen[y * screen_width + x] = '#';
+                }
+            }
 
 
 
         }
 
 
-        screen[screen_width * screen_height - 1] = L'\0'; // '\0'
+        screen[screen_width * screen_height - 1] = '\0'; // '\0'
         WriteConsoleOutputCharacter(console, screen, screen_width * screen_height, { 0, 0 }, &bytes_written);
         // WriteConsoleOutputCharacter : 문자를 출력한다.
         // 인자 : 핸들, 버퍼(input characters), length, 좌표(글자 위치, 이 경우 항상 tl에 쓸 것.), the number of the chars written.
