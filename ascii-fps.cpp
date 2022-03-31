@@ -34,7 +34,7 @@ int main()
     map += L"#..............#";
     map += L"#..............#";
     map += L"#..............#";
-    map += L"#..............#";
+    map += L"#.........##...#";
     map += L"#..............#";
     map += L"#..............#";
     map += L"#..............#";
@@ -75,7 +75,7 @@ int main()
 
 
 
-        for (int x = 0; x < screen_width; x++)
+        for (int x = 0; x < screen_width; x++) // x 크기가 120이므로, 한 픽셀씩 생각한다.
         {   // 플레이어의 시각을 촘촘하게 잘라서, 각 각도별로 벽에 닿을 때까지의 거리를 계산한다. (화면의 가로 길이가 120이므로, 화면의 x를 120개로 나눈다.)
             float ray_angle = ( player_ang - fov / 2.0f ) + ( static_cast<float>(x) / static_cast<float>(screen_width) ) * fov;
             // ( player_ang - fov / 2.0f ) : ray_angle의 시작. 
@@ -113,6 +113,14 @@ int main()
             
             int ceiling = (float)(screen_height / 2.0) - screen_height / (float)distance_to_wall;
             int floor = screen_height - ceiling; // 바닥은 그냥 천장을 반대로
+
+
+            short shade = ' ';
+            if (distance_to_wall <= depth / 4.0f)     shade = 0x2588;
+            else if (distance_to_wall < depth / 3.0f) shade = 0x2593;
+            else if (distance_to_wall < depth / 2.0f) shade = 0x2592;
+            else if (distance_to_wall < depth)        shade = 0x2591;
+            else                                      shade = ' ';
             
             for (int y = 0; y < screen_height; y++)
             {
@@ -126,7 +134,7 @@ int main()
                 }
                 else // wall
                 {
-                    screen[y * screen_width + x] = '#';
+                    screen[y * screen_width + x] = shade;
                 }
             }
 
