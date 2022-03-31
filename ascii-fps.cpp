@@ -84,8 +84,8 @@ int main()
             float distance_to_wall = 0;
             bool hit_wall = false;
 
-            float eye_x = sinf(ray_angle); // 각 각도의 단위 벡터.
-            float eye_y = cosf(ray_angle);
+            float eye_x = cosf(ray_angle); // 각 각도의 단위 벡터.
+            float eye_y = sinf(ray_angle);
 
 
             while (!hit_wall && distance_to_wall < depth)
