@@ -142,7 +142,12 @@ int main()
                 }
                 else if(y > floor) // 바닥 경계선보다 y가 크다 = 시야상 바닥. 
                 {
-                    screen[y * screen_width + x] = ' ';
+                    // screen[y * screen_width + x] = ' ';
+                    if (y < static_cast<int>(screen_height / 2)  * 1.45)  screen[y * screen_width + x] = ' ';
+                    else  screen[y * screen_width + x] = '.';
+                    //else if (y < static_cast<int>(screen_height / 2) * 1.75) screen[y * screen_width + x] = 'X';
+                    //else screen[y * screen_width + x] = '#';
+
                 }
                 else // wall
                 {
