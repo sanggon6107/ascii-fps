@@ -3,21 +3,22 @@
 #include <wchar.h>
 #include <string>
 #include <chrono>
+#include <cmath>
 
-int screen_width = 240;
-int screen_height = 80;
 
+constexpr int screen_width = 240;
+constexpr int screen_height = 80;
 
 float player_x = 8.0f;
 float player_y = 8.0f;
 float player_ang = 0.0f; // 지도상 플레이어 시선의 각도.
 
-
 int map_height = 16;
 int map_width = 16;
 
-float fov = 3.141592 / 4.0; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
-float depth = 16.0f; // 앞에 벽이 있는지 확인하기 위한 최대 깊이.
+constexpr float fov = 3.141592 / 4.0; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
+constexpr float depth = 16.0f; // 앞에 벽이 있는지 확인하기 위한 최대 깊이.
+
 
 int main()
 {
@@ -31,19 +32,19 @@ int main()
     std::wstring map;
 
     map += L"################";
+    map += L"#......#.......#";
+    map += L"#..............#";
+    map += L"#..............#";
+    map += L"#.........######";
     map += L"#..............#";
     map += L"#..............#";
     map += L"#..............#";
-    map += L"#.........##...#";
+    map += L"#......#.......#";
+    map += L"#......#.......#";
+    map += L"########.......#";
     map += L"#..............#";
     map += L"#..............#";
-    map += L"#..............#";
-    map += L"#..............#";
-    map += L"#..............#";
-    map += L"#..............#";
-    map += L"#..............#";
-    map += L"#..............#";
-    map += L"#..............#";
+    map += L"#......##......#";
     map += L"#..............#";
     map += L"################";
 
@@ -103,8 +104,8 @@ int main()
             {
                 distance_to_wall += 0.1f;
 
-                int test_x = (int)(player_x + eye_x * distance_to_wall);
-                int test_y = (int)(player_y + eye_y * distance_to_wall);
+                int test_x = static_cast<int>(std::round(player_x + eye_x * distance_to_wall));
+                int test_y = static_cast<int>(std::round(player_y + eye_y * distance_to_wall));
 
                 if (test_x < 0 || test_x >= map_width || test_y < 0 || test_y >= map_height) // test_x (테스트 지점)이 맵 바깥에 있는 경우
                 {
@@ -122,7 +123,7 @@ int main()
 
             // 바닥, 천장까지의 거리 계산. distance_to_wall이 길어질 수록 시야상 벽이 작아보이고, 천장과 바닥이 많이 보인다.
             
-            int ceiling = (float)(screen_height / 2.0) - screen_height / (float)distance_to_wall;
+            int ceiling = static_cast<int>(screen_height / 2) - static_cast<int>(std::round(screen_height / distance_to_wall));
             int floor = screen_height - ceiling; // 바닥은 그냥 천장을 반대로
 
 
