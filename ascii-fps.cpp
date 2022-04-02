@@ -9,14 +9,14 @@
 constexpr int screen_width = 240;
 constexpr int screen_height = 80;
 
-float player_x = 8.0f;
-float player_y = 8.0f;
+float player_x = 3.0f;
+float player_y = 3.0f;
 float player_ang = 0.0f; // 지도상 플레이어 시선의 각도.
 
 int map_height = 16;
 int map_width = 16;
 
-constexpr float fov = 3.141592 / 4.0; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
+constexpr float fov = 3.141592f / 4.0f; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
 constexpr float depth = 16.0f; // 앞에 벽이 있는지 확인하기 위한 최대 깊이.
 
 
@@ -73,16 +73,29 @@ int main()
             player_ang += f_elapsed_time;
         }
 
-        if (GetAsyncKeyState((unsigned short)'W') & 0x8000) // ?
+        if (GetAsyncKeyState((unsigned short)'W') & 0x8000) // player_ang로 앞으로 나아갔을 때 벽#이 있으면 안된다.
         {
-            player_x += cosf(player_ang) * 5.0f * f_elapsed_time;
-            player_y += sinf(player_ang) * 5.0f * f_elapsed_time;
+            
+            float player_x_temp = player_x + cosf(player_ang) * 5.0f * f_elapsed_time;
+            float player_y_temp = player_y + sinf(player_ang) * 5.0f * f_elapsed_time;
+
+            if (map[static_cast<int>(std::round(player_y_temp)) * map_width + static_cast<int>(std::round(player_x_temp))] != '#')
+            {
+                player_x = player_x_temp;
+                player_y = player_y_temp;
+            }
         }
 
         if (GetAsyncKeyState((unsigned short)'S') & 0x8000) // ?
         {
-            player_x -= cosf(player_ang) * 5.0f * f_elapsed_time;
-            player_y -= sinf(player_ang) * 5.0f * f_elapsed_time;
+            float player_x_temp = player_x - cosf(player_ang) * 5.0f * f_elapsed_time;
+            float player_y_temp = player_y - sinf(player_ang) * 5.0f * f_elapsed_time;
+
+            if (map[static_cast<int>(std::round(player_y_temp)) * map_width + static_cast<int>(std::round(player_x_temp))] != '#')
+            {
+                player_x = player_x_temp;
+                player_y = player_y_temp;
+            }
         }
 
 
@@ -143,8 +156,8 @@ int main()
                 else if(y > floor) // 바닥 경계선보다 y가 크다 = 시야상 바닥. 
                 {
                     // screen[y * screen_width + x] = ' ';
-                    if (y < static_cast<int>(screen_height / 2)  * 1.45)  screen[y * screen_width + x] = ' ';
-                    else  screen[y * screen_width + x] = '.';
+                    if (y < static_cast<int>(screen_height / 2)  * 1.45)  screen[y * screen_width + x] = '.';
+                    else  screen[y * screen_width + x] = 'X';
                     //else if (y < static_cast<int>(screen_height / 2) * 1.75) screen[y * screen_width + x] = 'X';
                     //else screen[y * screen_width + x] = '#';
 
