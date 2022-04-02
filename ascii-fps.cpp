@@ -64,13 +64,13 @@ int main()
         {
             //player_ang -= (0.001f); // while문이 돌아가는 속도는 컴퓨터의 연산 속도에 따라 다르다. 다른 프로그램과 같이 실행할 경우, 앵글 컨트롤 게인이 변할 수 있다.
             // 따라서 아래처럼 시스템 시간을 활용하여 콘솔 프레임이 돌아가는 속도와 무관하게 컨트롤 할 수 있도록 한다.
-            player_ang -= f_elapsed_time; // elapsed_time이 길어질 수록 프레임간 지체된 시간이 길고, 그 동안 키보드 입력중이었으므로 회전을 더 많이 한다.
+            player_ang -= 1.5f * f_elapsed_time; // elapsed_time이 길어질 수록 프레임간 지체된 시간이 길고, 그 동안 키보드 입력중이었으므로 회전을 더 많이 한다.
         }
 
         if (GetAsyncKeyState((unsigned short)'D') & 0x8000)
         {
             //player_ang += (0.001f);
-            player_ang += f_elapsed_time;
+            player_ang += 1.5f * f_elapsed_time;
         }
 
         if (GetAsyncKeyState((unsigned short)'W') & 0x8000) // player_ang로 앞으로 나아갔을 때 벽#이 있으면 안된다.
@@ -170,6 +170,12 @@ int main()
 
 
 
+        }
+        // 맵 표현
+        map[static_cast<int>(std::round(player_y)) * map_width + static_cast<int>(std::round(player_x))] = L'P';
+        for (int pos = 0; pos < map.size(); pos++)
+        {
+            screen[static_cast<int>(pos / map_width)*screen_width + pos % map_width] = map[pos];
         }
 
 
