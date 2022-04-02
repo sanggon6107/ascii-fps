@@ -9,7 +9,7 @@
 constexpr int screen_width = 240;
 constexpr int screen_height = 80;
 
-float player_x = 3.0f;
+float player_x = 4.0f;
 float player_y = 3.0f;
 float player_ang = 0.0f; // 지도상 플레이어 시선의 각도.
 
@@ -32,19 +32,19 @@ int main()
     std::wstring map;
 
     map += L"################";
+    map += L"#..#...........#";
+    map += L"#..#...#..###..#";
+    map += L"#..#...#..#....#";
+    map += L"#..#...#########";
     map += L"#......#.......#";
-    map += L"#..............#";
-    map += L"#..............#";
-    map += L"#.........######";
-    map += L"#..............#";
-    map += L"#..............#";
-    map += L"#..............#";
-    map += L"#......#.......#";
-    map += L"#......#.......#";
-    map += L"########.......#";
-    map += L"#..............#";
-    map += L"#..............#";
-    map += L"#......##......#";
+    map += L"###..#########.#";
+    map += L"#............#.#";
+    map += L"#..#####...###.#";
+    map += L"#......#...#...#";
+    map += L"########...##..#";
+    map += L"#.##...........#";
+    map += L"#.....#.....####";
+    map += L"#.#######....#.#";
     map += L"#..............#";
     map += L"################";
 
@@ -108,6 +108,7 @@ int main()
 
             float distance_to_wall = 0;
             bool hit_wall = false;
+            bool boundary = false;
 
             float eye_x = cosf(ray_angle); // 각 각도의 단위 벡터.
             float eye_y = sinf(ray_angle);
@@ -155,11 +156,8 @@ int main()
                 }
                 else if(y > floor) // 바닥 경계선보다 y가 크다 = 시야상 바닥. 
                 {
-                    // screen[y * screen_width + x] = ' ';
                     if (y < static_cast<int>(screen_height / 2)  * 1.45)  screen[y * screen_width + x] = '.';
                     else  screen[y * screen_width + x] = 'X';
-                    //else if (y < static_cast<int>(screen_height / 2) * 1.75) screen[y * screen_width + x] = 'X';
-                    //else screen[y * screen_width + x] = '#';
 
                 }
                 else // wall
@@ -183,7 +181,7 @@ int main()
         WriteConsoleOutputCharacter(console, screen, screen_width * screen_height, { 0, 0 }, &bytes_written);
         // WriteConsoleOutputCharacter : 문자를 출력한다.
         // 인자 : 핸들, 버퍼(input characters), length, 좌표(글자 위치, 이 경우 항상 tl에 쓸 것.), the number of the chars written.
-        map[static_cast<int>(std::round(player_y)) * map_width + static_cast<int>(std::round(player_x))] = L'.'; // 미니맵 플레이어 표시 초기화
+        map[static_cast<int>(std::round(player_y)) * map_width + static_cast<int>(std::round(player_x))] = L'.'; // 렌더링 끝나고 미니맵 플레이어 표시 초기화
     }
 
 }
