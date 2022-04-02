@@ -9,15 +9,20 @@
 constexpr int screen_width = 240;
 constexpr int screen_height = 80;
 
-float player_x = 4.0f;
-float player_y = 3.0f;
-float player_ang = 0.0f; // 지도상 플레이어 시선의 각도.
 
 int map_height = 16;
 int map_width = 16;
 
 constexpr float fov = 3.141592f / 4.0f; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
 constexpr float depth = 16.0f; // 앞에 벽이 있는지 확인하기 위한 최대 깊이.
+
+class Player
+{
+public :
+    float x_;
+    float y_;
+    float ang_;
+};
 
 
 int main()
@@ -28,6 +33,7 @@ int main()
     SetConsoleActiveScreenBuffer(console); // Sets the specified screen buffer to be the currently displayed console screen buffer.
     DWORD bytes_written = 0;
 
+    Player player{ .x_ = 4.0f, .y_=3.0f, .ang_=0.0f };
 
     std::wstring map;
 
@@ -64,37 +70,37 @@ int main()
         {
             //player_ang -= (0.001f); // while문이 돌아가는 속도는 컴퓨터의 연산 속도에 따라 다르다. 다른 프로그램과 같이 실행할 경우, 앵글 컨트롤 게인이 변할 수 있다.
             // 따라서 아래처럼 시스템 시간을 활용하여 콘솔 프레임이 돌아가는 속도와 무관하게 컨트롤 할 수 있도록 한다.
-            player_ang -= 1.5f * f_elapsed_time; // elapsed_time이 길어질 수록 프레임간 지체된 시간이 길고, 그 동안 키보드 입력중이었으므로 회전을 더 많이 한다.
+            player.ang_ -= 1.5f * f_elapsed_time; // elapsed_time이 길어질 수록 프레임간 지체된 시간이 길고, 그 동안 키보드 입력중이었으므로 회전을 더 많이 한다.
         }
 
         if (GetAsyncKeyState((unsigned short)'D') & 0x8000)
         {
             //player_ang += (0.001f);
-            player_ang += 1.5f * f_elapsed_time;
+            player.ang_ += 1.5f * f_elapsed_time;
         }
 
         if (GetAsyncKeyState((unsigned short)'W') & 0x8000) // player_ang로 앞으로 나아갔을 때 벽#이 있으면 안된다.
         {
             
-            float player_x_temp = player_x + cosf(player_ang) * 5.0f * f_elapsed_time;
-            float player_y_temp = player_y + sinf(player_ang) * 5.0f * f_elapsed_time;
+            float player_x_temp = player.x_ + cosf(player.ang_) * 5.0f * f_elapsed_time;
+            float player_y_temp = player.y_ + sinf(player.ang_) * 5.0f * f_elapsed_time;
 
             if (map[static_cast<int>(std::round(player_y_temp)) * map_width + static_cast<int>(std::round(player_x_temp))] != '#')
             {
-                player_x = player_x_temp;
-                player_y = player_y_temp;
+                player.x_ = player_x_temp;
+                player.y_ = player_y_temp;
             }
         }
 
         if (GetAsyncKeyState((unsigned short)'S') & 0x8000) // ?
         {
-            float player_x_temp = player_x - cosf(player_ang) * 5.0f * f_elapsed_time;
-            float player_y_temp = player_y - sinf(player_ang) * 5.0f * f_elapsed_time;
+            float player_x_temp = player.x_ - cosf(player.ang_) * 5.0f * f_elapsed_time;
+            float player_y_temp = player.y_ - sinf(player.ang_) * 5.0f * f_elapsed_time;
 
             if (map[static_cast<int>(std::round(player_y_temp)) * map_width + static_cast<int>(std::round(player_x_temp))] != '#')
             {
-                player_x = player_x_temp;
-                player_y = player_y_temp;
+                player.x_ = player_x_temp;
+                player.y_ = player_y_temp;
             }
         }
 
@@ -102,7 +108,7 @@ int main()
 
         for (int x = 0; x < screen_width; x++) // x 크기가 120이므로, 한 픽셀씩 생각한다.
         {   // 플레이어의 시각을 촘촘하게 잘라서, 각 각도별로 벽에 닿을 때까지의 거리를 계산한다. (화면의 가로 길이가 120이므로, 화면의 x를 120개로 나눈다.)
-            float ray_angle = ( player_ang - fov / 2.0f ) + ( static_cast<float>(x) / static_cast<float>(screen_width) ) * fov;
+            float ray_angle = (player.ang_ - fov / 2.0f ) + ( static_cast<float>(x) / static_cast<float>(screen_width) ) * fov;
             // ( player_ang - fov / 2.0f ) : ray_angle의 시작. 
             // fov를 스크린 넓이 수만큼 나눈 것. 즉, 그림 안에 들어오는 각도 ray_angle은 -fov/2 부터 fov/2까지이다. 
 
@@ -118,8 +124,11 @@ int main()
             {
                 distance_to_wall += 0.1f;
 
-                int test_x = static_cast<int>(std::round(player_x + eye_x * distance_to_wall));
-                int test_y = static_cast<int>(std::round(player_y + eye_y * distance_to_wall));
+                int test_x = static_cast<int>(std::round(player.x_ + eye_x * distance_to_wall));
+                int test_y = static_cast<int>(std::round(player.y_ + eye_y * distance_to_wall));
+
+                
+
 
                 if (test_x < 0 || test_x >= map_width || test_y < 0 || test_y >= map_height) // test_x (테스트 지점)이 맵 바깥에 있는 경우
                 {
@@ -170,7 +179,7 @@ int main()
 
         }
         // 맵 표현
-        map[static_cast<int>(std::round(player_y)) * map_width + static_cast<int>(std::round(player_x))] = L'P';
+        map[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'P';
         for (int pos = 0; pos < map.size(); pos++)
         {
             screen[static_cast<int>(pos / map_width)*screen_width + pos % map_width] = map[pos];
@@ -181,7 +190,7 @@ int main()
         WriteConsoleOutputCharacter(console, screen, screen_width * screen_height, { 0, 0 }, &bytes_written);
         // WriteConsoleOutputCharacter : 문자를 출력한다.
         // 인자 : 핸들, 버퍼(input characters), length, 좌표(글자 위치, 이 경우 항상 tl에 쓸 것.), the number of the chars written.
-        map[static_cast<int>(std::round(player_y)) * map_width + static_cast<int>(std::round(player_x))] = L'.'; // 렌더링 끝나고 미니맵 플레이어 표시 초기화
+        map[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'.'; // 렌더링 끝나고 미니맵 플레이어 표시 초기화
     }
 
 }
