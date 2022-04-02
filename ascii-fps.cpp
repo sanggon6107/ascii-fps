@@ -152,8 +152,8 @@ int main()
 
             short shade = ' ';
             if (distance_to_wall <= depth / 4.0f)     shade = 0x2588;
-            else if (distance_to_wall < depth / 3.0f) shade = 0x2592;
-            else if (distance_to_wall < depth / 2.0f) shade = 0x2593;
+            else if (distance_to_wall < depth / 3.0f) shade = 0x2593;
+            else if (distance_to_wall < depth / 2.0f) shade = 0x2592;
             else if (distance_to_wall < depth)        shade = 0x2591;
             else                                      shade = ' ';
             
