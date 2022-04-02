@@ -179,10 +179,11 @@ int main()
         }
 
 
-        screen[screen_width * screen_height - 1] = '\0'; // '\0'
+        screen[screen_width * screen_height - 1] = '\0';
         WriteConsoleOutputCharacter(console, screen, screen_width * screen_height, { 0, 0 }, &bytes_written);
         // WriteConsoleOutputCharacter : 문자를 출력한다.
         // 인자 : 핸들, 버퍼(input characters), length, 좌표(글자 위치, 이 경우 항상 tl에 쓸 것.), the number of the chars written.
+        map[static_cast<int>(std::round(player_y)) * map_width + static_cast<int>(std::round(player_x))] = L'.'; // 미니맵 플레이어 표시 초기화
     }
 
 }
