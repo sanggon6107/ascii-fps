@@ -3,17 +3,29 @@
 using namespace std;
 
 
-MapCreator::MapCreator(int w, int h)
+void MapCreator::Export(wstring& out)
 {
-	Create(w, h);
+	for (auto& row : map_) { out += row; }
 }
 
-void MapCreator::Create(int w, int h)
+MapCreator::MapCreator(int w, int h) : w_(w), h_(h)
 {
-	
+	InitMap();
+	CreateMaze();
 }
 
-vector<vector<wstring>> MapCreator::Export()
+void MapCreator::InitMap()
+{
+	for (auto& row : map_) { row = L'#' + (L'.' * w_ - 2) + L'#'; }
+
+	map_[0]               = L'#' * w_;
+	map_[map_.size() - 1] = L'#' * w_;
+
+}
+
+
+void MapCreator::CreateMaze()
 {
 
 }
+
