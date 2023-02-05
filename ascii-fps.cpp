@@ -4,6 +4,7 @@
 #include <string>
 #include <chrono>
 #include <cmath>
+// #include "mapcreator.h"
 
 
 constexpr int screen_width = 240;
@@ -27,6 +28,11 @@ public :
 
 int main()
 {
+    // wstring map;
+    // shared_ptr<MapCreator> map_creator = make_shared<MapCreator>(16, 16);
+    // map_creator->Export(map);
+
+
     // 스크린 버퍼 만들기. cout을 이용한 출력은 느리므로 버퍼를 만들어서 직접 입력한다.
     wchar_t* screen = new wchar_t[screen_width * screen_height]; // wide character
     HANDLE console = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL); // creates a screen buffer for the Windows Console.
