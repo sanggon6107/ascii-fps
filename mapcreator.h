@@ -1,6 +1,9 @@
 #pragma once
+#include <iostream>
 #include <vector>
 #include <string>
+#include <random>
+
 using namespace std;
 
 class MapCreator
