@@ -6,6 +6,10 @@
 
 using namespace std;
 
+enum Direction { right = 0, left = 1, down = 2, up = 3, disable = 4 };
+
+enum 
+
 class MapCreator
 {
 public :
