@@ -39,16 +39,21 @@ void MapCreator::CreateMaze()
 	int w_delta[4]{ 2, -2, 0, 0 };
 	int h_delta[4]{ 0, 0, 2, -2 };
 
+	vector<vector<bool>> visited;
+	for (int row = 0; row < h_; row++) { visited.emplace_back(w_, false); }
+
 	for (int dir = CanMoveOn(); dir != Direction::disable;) // 0 ~ 3 : delta[0 ~ 3], 4 : impossible
 	{
 		int w_temp = w + w_delta[dir];
 		int h_temp = h + h_delta[dir];
 		if (w_temp <= 1 || w_temp >= w_ - 1) continue;
 		if (h_temp <= 1 || h_temp >= h_ - 1) continue;
+		if (visited[h_temp][w_temp] == true) continue;
 		
 		map_[h + (h_delta[dir]/2)][w + (w_delta[dir]/2)] = L".";
 		w = w_temp;
 		h = h_temp;
+		visited[h_temp][w_temp] = true;
 	}
 }
 
