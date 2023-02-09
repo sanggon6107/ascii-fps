@@ -4,7 +4,13 @@ using namespace std;
 
 void MapCreator::Export(wstring& out)
 {
-	for (auto& row : map_) { out += row; }
+	for (auto& row : map_)
+	{
+		for (auto& col : row)
+		{
+			out += col;
+		}
+	}
 }
 
 MapCreator::MapCreator(int w, int h) : w_(w), h_(h)
@@ -15,23 +21,13 @@ MapCreator::MapCreator(int w, int h) : w_(w), h_(h)
 
 void MapCreator::InitMap()
 {
-	vector<wstring> map_element{ L"#", L"." };
-
-	for (int i = 0; i < h_; i++)
+	for (int row = 0; row < h_; row++)
 	{
-		wstring row_temp = L"";
-		if (i == 0 || i == h_ - 1)
-		{
-			for (int col = 0; col < w_; col++) { row_temp += L"#"; }
-			map_.push_back(move(row_temp));
-		}
-		else
-		{
-			row_temp += L"#";
-			for (int col = 1; col < w_ - 1; col++) { row_temp += map_element[col % 2]; }
-			row_temp += L"#";
-			map_.push_back(move(row_temp));
-		}
+		map_.emplace_back(w_, L"#");
+
+		if (row == 0 || row == h_ - 1 || row % 2 == 0) continue;
+
+		for (int col = 1; col < w_ - 1; ++(++col)) { map_[row][col] = L"."; }
 	}
 }
 
@@ -40,8 +36,8 @@ void MapCreator::CreateMaze()
 	int w = 1;
 	int h = 1;
 	
-	int w_delta[4]{ 1, -1, 0, 0 };
-	int h_delta[4]{ 0, 0, 1, -1 };
+	int w_delta[4]{ 2, -2, 0, 0 };
+	int h_delta[4]{ 0, 0, 2, -2 };
 
 	for (int dir = CanMoveOn(); dir != Direction::disable;) // 0 ~ 3 : delta[0 ~ 3], 4 : impossible
 	{
@@ -49,8 +45,8 @@ void MapCreator::CreateMaze()
 		int h_temp = h + h_delta[dir];
 		if (w_temp <= 1 || w_temp >= w_ - 1) continue;
 		if (h_temp <= 1 || h_temp >= h_ - 1) continue;
-
-		map_[h_temp].replace(w_temp, 1, L".");
+		
+		map_[h + (h_delta[dir]/2)][w + (w_delta[dir]/2)] = L".";
 		w = w_temp;
 		h = h_temp;
 	}
