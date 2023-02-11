@@ -4,15 +4,15 @@
 #include <string>
 #include <chrono>
 #include <cmath>
-// #include "mapcreator.h"
+#include "mapcreator.h"
 
 
 constexpr int screen_width = 240;
 constexpr int screen_height = 80;
 
 
-int map_height = 16;
-int map_width = 16;
+int map_height = 17;
+int map_width = 17;
 
 constexpr float fov = 3.141592f / 4.0f; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
 constexpr float depth = 16.0f; // 앞에 벽이 있는지 확인하기 위한 최대 깊이.
@@ -28,10 +28,6 @@ public :
 
 int main()
 {
-    // wstring map;
-    // shared_ptr<MapCreator> map_creator = make_shared<MapCreator>(16, 16);
-    // map_creator->Export(map);
-
 
     // 스크린 버퍼 만들기. cout을 이용한 출력은 느리므로 버퍼를 만들어서 직접 입력한다.
     wchar_t* screen = new wchar_t[screen_width * screen_height]; // wide character
@@ -40,25 +36,10 @@ int main()
     DWORD bytes_written = 0;
 
     Player player{ .x_ = 4.0f, .y_=3.0f, .ang_=0.0f };
-
+   
     std::wstring map;
-
-    map += L"################";
-    map += L"#..#...........#";
-    map += L"#..#...#..###..#";
-    map += L"#..#...#..#....#";
-    map += L"#..#...#########";
-    map += L"#......#.......#";
-    map += L"###..#########.#";
-    map += L"#............#.#";
-    map += L"#..#####...###.#";
-    map += L"#......#...#...#";
-    map += L"########...##..#";
-    map += L"#.##...........#";
-    map += L"#.....#.....####";
-    map += L"#.#######....#.#";
-    map += L"#..............#";
-    map += L"################";
+    std::shared_ptr<MapCreator> map_creator = std::make_shared<MapCreator>(map_width, map_height);
+    map_creator->Export(map);
 
     auto tp_1 = std::chrono::system_clock::now();
     auto tp_2 = std::chrono::system_clock::now();
@@ -158,8 +139,8 @@ int main()
 
             short shade = ' ';
             if (distance_to_wall <= depth / 4.0f)     shade = 0x2588;
-            else if (distance_to_wall < depth / 3.0f) shade = 0x2593;
-            else if (distance_to_wall < depth / 2.0f) shade = 0x2592;
+            else if (distance_to_wall < depth / 3.0f) shade = 0x2592;
+            else if (distance_to_wall < depth / 2.0f) shade = 0x2593;
             else if (distance_to_wall < depth)        shade = 0x2591;
             else                                      shade = ' ';
             
