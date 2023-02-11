@@ -42,20 +42,28 @@ void MapCreator::CreateMaze()
 	int h = 1;
 	visited_[1][1] = true;
 	
-
-	// Kill
-	while (1) // 0 ~ 3 : delta[0 ~ 3], 4 : impossible
+	while (1)
 	{
-		auto [dir, w_temp, h_temp] = CanMoveOn(engine, w, h);
-		
-		if (dir == Direction::disable) break;
+		// Kill
+		while (1) // 0 ~ 3 : delta[0 ~ 3], 4 : impossible
+		{
+			auto [dir, w_temp, h_temp] = CanMoveOn(engine, w, h);
 
-		map_[h + (h_delta_[dir]/2)][w + (w_delta_[dir]/2)] = L".";
-		w = w_temp;
-		h = h_temp;
-		visited_[h_temp][w_temp] = true;
+			if (dir == Direction::disable) break;
+
+			map_[h + (h_delta_[dir] / 2)][w + (w_delta_[dir] / 2)] = L".";
+			w = w_temp;
+			h = h_temp;
+			visited_[h_temp][w_temp] = true;
+		}
+		// Hunt
+		auto [next_w, next_h] = Hunt();
+		if (next_w == 0 && next_h == 0) return;
+
+		w = next_w;
+		h = next_h;
+		visited_[next_h][next_w] = true;
 	}
-	// Hunt
 }
 
 tuple<Direction, int, int> MapCreator::CanMoveOn(mt19937 & engine, int w, int h)
@@ -67,8 +75,8 @@ tuple<Direction, int, int> MapCreator::CanMoveOn(mt19937 & engine, int w, int h)
 	{
 		int w_temp = w + w_delta_[dir];
 		int h_temp = h + h_delta_[dir];
-		if (w_temp <= 0 || w_temp >= w_ - 2)  continue;
-		if (h_temp <= 0 || h_temp >= h_ - 2)  continue;
+		if (w_temp <= 0 || w_temp >= w_ - 1)  continue;
+		if (h_temp <= 0 || h_temp >= h_ - 1)  continue;
 		if (visited_[h_temp][w_temp] == true) continue;
 		candidate.push_back(dir);
 	}
@@ -79,4 +87,30 @@ tuple<Direction, int, int> MapCreator::CanMoveOn(mt19937 & engine, int w, int h)
 	int dir = candidate[distribution(engine)];
 
 	return make_tuple(static_cast<Direction>(dir), w + w_delta_[dir], h + h_delta_[dir]);
+}
+
+tuple<int, int> MapCreator::Hunt()
+{
+	for (int h = 1; h < h_ - 1; ++(++h))
+	{
+		for (int w = 1; w < w_ - 1; ++(++w))
+		{
+			if (visited_[h][w] == true) continue;
+
+			for (int dir = Direction::right; dir < Direction::disable; dir++)
+			{
+				int h_temp = h + h_delta_[dir];
+				int w_temp = w + w_delta_[dir];
+				if (w_temp <= 0 || w_temp >= w_ - 2)  continue;
+				if (h_temp <= 0 || h_temp >= h_ - 2)  continue;
+				if (visited_[h_temp][w_temp] == false) continue;
+				
+				map_[h + (h_delta_[dir] / 2)][w + (w_delta_[dir] / 2)] = L".";
+
+				return make_tuple(w, h);
+			}
+		}
+	}
+
+	return make_tuple(0, 0);
 }
