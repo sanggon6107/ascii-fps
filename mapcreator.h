@@ -19,6 +19,7 @@ private:
 	void InitMap();
 	void CreateMaze();
 	tuple<Direction, int, int> CanMoveOn(mt19937& engine, int w, int h);
+	tuple<int, int> Hunt();
 	
 	vector<vector<wstring>> map_;
 	vector<vector<bool>> visited_;
