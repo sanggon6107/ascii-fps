@@ -12,10 +12,10 @@ enum Direction { right = 0, left = 1, down = 2, up = 3, disable = 4 };
 class MapCreator
 {
 public :
+	MapCreator(int w, int h);
 	void Export(wstring& out);
 
 private:
-	MapCreator(int w, int h);
 	void InitMap();
 	void CreateMaze();
 	

@@ -16,7 +16,7 @@ void MapCreator::Export(wstring& out)
 MapCreator::MapCreator(int w, int h) : w_(w), h_(h)
 {
 	InitMap();
-	CreateMaze();
+	//CreateMaze();
 }
 
 void MapCreator::InitMap()
@@ -42,6 +42,7 @@ void MapCreator::CreateMaze()
 	vector<vector<bool>> visited;
 	for (int row = 0; row < h_; row++) { visited.emplace_back(w_, false); }
 
+	// Kill
 	for (int dir = CanMoveOn(); dir != Direction::disable;) // 0 ~ 3 : delta[0 ~ 3], 4 : impossible
 	{
 		int w_temp = w + w_delta[dir];
@@ -55,15 +56,17 @@ void MapCreator::CreateMaze()
 		h = h_temp;
 		visited[h_temp][w_temp] = true;
 	}
+	// Hunt
 }
 
 Direction CanMoveOn()
 {
-	int delta_idx[4]{ 0, 1, 2, 3 };
+	vector<int> delta_idx{ Direction::right, Direction::left, Direction::down, Direction::up };
 
 	random_device rd;
 	mt19937 engine(rd());
 	uniform_int_distribution<int> distribution(0, 3);
+
 
 	return Direction::disable;
 }
