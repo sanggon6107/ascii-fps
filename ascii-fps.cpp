@@ -4,7 +4,12 @@
 #include <string>
 #include <chrono>
 #include <cmath>
+#include <array>
+#include <ahadmin.h>
 #include "mapcreator.h"
+
+using namespace std;
+
 
 
 constexpr int screen_width = 240;
@@ -16,6 +21,7 @@ int map_width = 17;
 
 constexpr float fov = 3.141592f / 4.0f; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
 constexpr float depth = 16.0f; // 앞에 벽이 있는지 확인하기 위한 최대 깊이.
+array<int, static_cast<int>(depth) + 1> shades{ 0x2588 , 0x2588, 0x2580, 0x2593, 0x2593, 0x2592, 0x2592, 0x2591, 0x2591, 0x2591, 0x2591, 0x2591, 0x2591, 0x2591, 0x2591, 0x2591, 0x0020 };
 
 class Player
 {
@@ -35,7 +41,7 @@ int main()
     SetConsoleActiveScreenBuffer(console); // Sets the specified screen buffer to be the currently displayed console screen buffer.
     DWORD bytes_written = 0;
 
-    Player player{ .x_ = 4.0f, .y_=3.0f, .ang_=0.0f };
+    Player player{ .x_ = 1.0f, .y_ = 1.0f, .ang_ = 0.0f };
    
     std::wstring map;
     std::shared_ptr<MapCreator> map_creator = std::make_shared<MapCreator>(map_width, map_height);
@@ -79,7 +85,7 @@ int main()
             }
         }
 
-        if (GetAsyncKeyState((unsigned short)'S') & 0x8000) // ?
+        if (GetAsyncKeyState((unsigned short)'S') & 0x8000)
         {
             float player_x_temp = player.x_ - cosf(player.ang_) * 5.0f * f_elapsed_time;
             float player_y_temp = player.y_ - sinf(player.ang_) * 5.0f * f_elapsed_time;
@@ -100,36 +106,35 @@ int main()
             // fov를 스크린 넓이 수만큼 나눈 것. 즉, 그림 안에 들어오는 각도 ray_angle은 -fov/2 부터 fov/2까지이다. 
 
             float distance_to_wall = 0;
-            bool hit_wall = false;
-            bool boundary = false;
+            bool is_hit_wall = false;
+            bool is_boundary = false;
 
             float eye_x = cosf(ray_angle); // 각 각도의 단위 벡터.
             float eye_y = sinf(ray_angle);
 
+            int test_x = 0;
+            int test_y = 0;
 
-            while (!hit_wall && distance_to_wall < depth)
+
+            while (!is_hit_wall && distance_to_wall < depth)
             {
                 distance_to_wall += 0.1f;
 
-                int test_x = static_cast<int>(std::round(player.x_ + eye_x * distance_to_wall));
-                int test_y = static_cast<int>(std::round(player.y_ + eye_y * distance_to_wall));
-
-                
+                test_x = static_cast<int>(std::round(player.x_ + eye_x * distance_to_wall));
+                test_y = static_cast<int>(std::round(player.y_ + eye_y * distance_to_wall));
 
 
                 if (test_x < 0 || test_x >= map_width || test_y < 0 || test_y >= map_height) // test_x (테스트 지점)이 맵 바깥에 있는 경우
                 {
-                    hit_wall = true;
+                    is_hit_wall = true;
                     distance_to_wall = depth; // distance_to_wall은 그냥 최대.
                 }
-                else // test_x (테스트 지점)이 맵 안에 있는 경우 그 지점이 벽인지 아닌지 판단한다.
+                else if(map[test_y * map_width + test_x] == '#') // test_x (테스트 지점)이 맵 안에 있는 경우 그 지점이 벽인지 아닌지 판단한다. (x, y)가 벽이라면
                 {
-                    if (map[test_y * map_width + test_x] == '#') // (x, y)가 벽이라면
-                    {
-                        hit_wall = true;
-                    }
+                    is_hit_wall = true;
                 }
             }
+
 
             // 바닥, 천장까지의 거리 계산. distance_to_wall이 길어질 수록 시야상 벽이 작아보이고, 천장과 바닥이 많이 보인다.
             
@@ -138,12 +143,9 @@ int main()
 
 
             short shade = ' ';
-            if (distance_to_wall <= depth / 4.0f)     shade = 0x2588;
-            else if (distance_to_wall < depth / 3.0f) shade = 0x2592;
-            else if (distance_to_wall < depth / 2.0f) shade = 0x2593;
-            else if (distance_to_wall < depth)        shade = 0x2591;
-            else                                      shade = ' ';
-            
+            if (distance_to_wall > 16.0f) distance_to_wall = 16.0f;
+            shade = shades[static_cast<int>(distance_to_wall)];
+
             for (int y = 0; y < screen_height; y++)
             {
                 if (y < ceiling) // sky
