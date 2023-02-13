@@ -136,8 +136,9 @@ int main()
                     double wall_pos_x = player.x_ + eye_x * distance_to_wall;
                     double wall_pos_y = player.y_ + eye_y * distance_to_wall;
                     
-                    double distance_wall_core_wall_pos = sqrt(pow(static_cast<double>(test_x) - wall_pos_x, 2) + pow(static_cast<double>(test_y) - wall_pos_y, 2));
-                    if (distance_wall_core_wall_pos > 0.60) is_boundary = true;
+                    double wall_pos_x_tenths = abs(wall_pos_x - round(wall_pos_x));
+                    double wall_pos_y_tenths = abs(wall_pos_y - round(wall_pos_y));
+                    if (wall_pos_x_tenths > 0.4  && wall_pos_y_tenths > 0.4 ) is_boundary = true;
                 }
             }
 
