@@ -132,6 +132,12 @@ int main()
                 else if(map[test_y * map_width + test_x] == '#') // test_x (테스트 지점)이 맵 안에 있는 경우 그 지점이 벽인지 아닌지 판단한다. (x, y)가 벽이라면
                 {
                     is_hit_wall = true;
+
+                    double wall_pos_x = player.x_ + eye_x * distance_to_wall;
+                    double wall_pos_y = player.y_ + eye_y * distance_to_wall;
+                    
+                    double distance_wall_core_wall_pos = sqrt(pow(static_cast<double>(test_x) - wall_pos_x, 2) + pow(static_cast<double>(test_y) - wall_pos_y, 2));
+                    if (distance_wall_core_wall_pos > 0.60) is_boundary = true;
                 }
             }
 
@@ -145,6 +151,7 @@ int main()
             short shade = ' ';
             if (distance_to_wall > 16.0f) distance_to_wall = 16.0f;
             shade = shades[static_cast<int>(distance_to_wall)];
+            if (is_boundary) shade = ' ';
 
             for (int y = 0; y < screen_height; y++)
             {
