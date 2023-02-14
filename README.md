@@ -9,5 +9,4 @@
 
 몇몇 줄의 코드는 더 나은 코드를 고민할 거리가 되기도 했는데, 가령 벽의 바운더리를 그리는 알고리즘은 참고가 된 영상의 방법이 너무 복잡한데다가 항상 완벽하게 화면상의 바운더리를 잡아주지는 못한다는 단점도 가지고 있었기 때문에, 후술할 몇번의 시행착오를 거쳐 현재의 간단하면서도 비교적으로 안정적인 형태가 되었다.
 
-
-![gameplay](https://github.com/sanggon6107/ascii-fps/blob/master/Media/gameplay.gif?raw=true)
+![gameplay](./Media/gameplay.gif)
