@@ -6,7 +6,7 @@
 #include <cmath>
 #include <array>
 #include <ahadmin.h>
-#include "mapcreator.h"
+#include "MapCreator.h"
 
 using namespace std;
 

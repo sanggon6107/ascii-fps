@@ -1,4 +1,4 @@
-#include "mapcreator.h"
+#include "MapCreator.h"
 
 using namespace std;
 
