@@ -4,9 +4,13 @@ enum class ContextState { kContextGamePlay, kContextTitleScreen, kContextExit };
 
 class IContext
 {
-public:
-	IContext();
+public :
 	virtual ContextState Run() = 0;
-private:
 
+protected :
+	IContext(int w, int h);
+
+private :
+	int h_;
+	int w_;
 };

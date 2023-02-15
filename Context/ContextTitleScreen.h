@@ -1,11 +1,11 @@
 #pragma once
 #include "IContext.h"
 
-class ProcTitleScreen : public IContext
+class ContextTitleScreen : public IContext
 {
 public :
-	ProcTitleScreen();
+	ContextTitleScreen(int w, int h);
 	ContextState Run() override;
+	void WriteText();
 private:
-
 };
