@@ -1,4 +1,10 @@
 #pragma once
+#include <windows.h>
+#include <wchar.h>
+#include <string>
+#include <iostream>
+
+using namespace std;
 
 enum class ContextState { kContextGamePlay, kContextTitleScreen, kContextExit };
 
@@ -10,7 +16,6 @@ public :
 protected :
 	IContext(int w, int h);
 
-private :
 	int h_;
 	int w_;
 };

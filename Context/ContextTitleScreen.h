@@ -1,4 +1,5 @@
 #pragma once
+
 #include "IContext.h"
 
 class ContextTitleScreen : public IContext
@@ -6,6 +7,6 @@ class ContextTitleScreen : public IContext
 public :
 	ContextTitleScreen(int w, int h);
 	ContextState Run() override;
-	void WriteText();
+	void SetText();
 private:
 };
