@@ -2,7 +2,16 @@
 
 #include "IContext.h"
 
-enum class TitleScreenText : int { kTitle, kTitleScreenTextSize };
+#define TITLE_W 90
+#define TITLE_H 10
+#define START_W 100
+#define START_H 40
+#define EXIT_W  100
+#define EXIT_H  50
+
+
+
+enum class TitleScreenText : int { kTitle, kStart, kExit, kTitleScreenTextSize };
 
 class ContextTitleScreen : public IContext
 {

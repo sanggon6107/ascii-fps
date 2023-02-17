@@ -13,7 +13,10 @@ ContextState ContextTitleScreen::Run()
 	{
 		for (int i = 0; i < screen_height_; i++) { for (int j = 0; j < screen_width_; j++) { screen[i * screen_width_ + j] = ' '; } }
 
-		PutText(screen, 1, 1, TitleScreenText::kTitle);
+		PutText(screen, TITLE_W, TITLE_H, TitleScreenText::kTitle);
+		PutText(screen, START_W, START_H, TitleScreenText::kStart);
+		PutText(screen, EXIT_W, EXIT_H, TitleScreenText::kExit);
+
 
 		screen[screen_width_ * screen_height_ - 1] = '\0';
 		WriteConsoleOutputCharacter(console, screen, screen_width_ * screen_height_, { 0, 0 }, &bytes_written);
@@ -29,21 +32,21 @@ void ContextTitleScreen::PutText(wchar_t* screen, int w, int h, TitleScreenText 
 	{
 		wcscpy_s(&screen[screen_width_ * height + w], wcslen(screen), text_list_[(int)text_type][height - h].data());
 	}
-}
-
-ContextTitleScreen::ContextTitleScreen(int w, int h) : IContext(w, h)
-{
-	for (int list_idx = 0; list_idx < (int)TitleScreenText::kTitleScreenTextSize; list_idx++)
-	{
-		text_list_.emplace_back(0);
-	}
-
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"██████████████████████████████████");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─██─█───█────█────█────██───█");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█──█─██─██─██─█─██─█─██──█─███");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─█──██─██─████─██─█─██──█───█");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─██─██─██─██─█─██─█─██──█─███");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█───█─██─█───█────█────█────██───█");
+}																											   
+																											   
+ContextTitleScreen::ContextTitleScreen(int w, int h) : IContext(w, h)										   
+{																											   
+	for (int list_idx = 0; list_idx < (int)TitleScreenText::kTitleScreenTextSize; list_idx++)				   
+	{																										   
+		text_list_.emplace_back(0);																			   
+	}																										   
+																											   
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"██████████████████████████████████");				   
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─██─█───█────█────█────██───█");				   
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█──█─██─██─██─█─██─█─██──█─███");				   
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─█──██─██─████─██─█─██──█───█");				   
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─██─██─██─██─█─██─█─██──█─███");				   
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█───█─██─█───█────█────█────██───█");				   
 	text_list_[(int)TitleScreenText::kTitle].push_back(L"██████████████████████████████████");
 	text_list_[(int)TitleScreenText::kTitle].push_back(L"████████████████████████████████████████████████████");
 	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█────█────█───████────█─█─█─██─█─██─█───█────█");
@@ -52,4 +55,17 @@ ContextTitleScreen::ContextTitleScreen(int w, int h) : IContext(w, h)
 	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█─██─█──███─██████─█─██─█─█─██─█─██─█─███─█─██");
 	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█─██─█────█───████─█─██───█─██─█─██─█───█─█─██");
 	text_list_[(int)TitleScreenText::kTitle].push_back(L"████████████████████████████████████████████████████");
+
+	text_list_[(int)TitleScreenText::kStart].push_back(L"███─███─████─████─███");
+	text_list_[(int)TitleScreenText::kStart].push_back(L"█────█──█──█─█──█──█─");
+	text_list_[(int)TitleScreenText::kStart].push_back(L"███──█──████─████──█─");
+	text_list_[(int)TitleScreenText::kStart].push_back(L"──█──█──█──█─█─█───█─");
+	text_list_[(int)TitleScreenText::kStart].push_back(L"███──█──█──█─█─█───█─");
+
+	text_list_[(int)TitleScreenText::kExit].push_back(L"███─██─██─███─███");
+	text_list_[(int)TitleScreenText::kExit].push_back(L"█────███───█───█─");
+	text_list_[(int)TitleScreenText::kExit].push_back(L"███───█────█───█─");
+	text_list_[(int)TitleScreenText::kExit].push_back(L"█────███───█───█─");
+	text_list_[(int)TitleScreenText::kExit].push_back(L"███─██─██─███──█─");
+
 }
