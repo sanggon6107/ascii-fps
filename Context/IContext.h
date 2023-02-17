@@ -13,7 +13,7 @@ class IContext
 {
 public :
 	virtual ContextState Run() = 0;
-
+	virtual ~IContext() {}
 protected :
 	IContext(int w, int h);
 
