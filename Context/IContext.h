@@ -3,6 +3,7 @@
 #include <wchar.h>
 #include <string>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -16,6 +17,6 @@ public :
 protected :
 	IContext(int w, int h);
 
-	int h_;
-	int w_;
+	int screen_height_;
+	int screen_width_;
 };
