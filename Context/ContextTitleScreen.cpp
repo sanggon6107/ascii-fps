@@ -1,27 +1,5 @@
 ﻿#include "ContextTitleScreen.h"
 
-ContextTitleScreen::ContextTitleScreen(int w, int h) : IContext(w, h)
-{
-	for (int list_idx = 0; list_idx < (int)TitleScreenText::kTitleScreenTextSize; list_idx++)
-	{
-		text_list_.emplace_back(0);
-	}
-
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"██████████████████████████████████");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─██─█───█────█────█────██───█");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█──█─██─██─██─█─██─█─██──█─███");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─█──██─██─████─██─█─██──█───█");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─██─██─██─██─█─██─█─██──█─███");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█───█─██─█───█────█────█────██───█");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"██████████████████████████████████");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"████████████████████████████████████████████████████");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█────█────█───████────█─█─█─██─█─██─█───█────█");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█──█──█─██─███──█─██████─██─█─█─█──█─█──█─█─███─██─█");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─█────██──██───████────█─█─█─█──█─█──█───█────█");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█─██─█──███─██████─█─██─█─█─██─█─██─█─███─█─██");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█─██─█────█───████─█─██───█─██─█─██─█───█─█─██");
-	text_list_[(int)TitleScreenText::kTitle].push_back(L"████████████████████████████████████████████████████");
-}
 
 ContextState ContextTitleScreen::Run()
 {
@@ -51,4 +29,27 @@ void ContextTitleScreen::PutText(wchar_t* screen, int w, int h, TitleScreenText 
 	{
 		wcscpy_s(&screen[screen_width_ * height + w], wcslen(screen), text_list_[(int)text_type][height - h].data());
 	}
+}
+
+ContextTitleScreen::ContextTitleScreen(int w, int h) : IContext(w, h)
+{
+	for (int list_idx = 0; list_idx < (int)TitleScreenText::kTitleScreenTextSize; list_idx++)
+	{
+		text_list_.emplace_back(0);
+	}
+
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"██████████████████████████████████");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─██─█───█────█────█────██───█");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█──█─██─██─██─█─██─█─██──█─███");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─█──██─██─████─██─█─██──█───█");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─██─██─██─██─█─██─█─██──█─███");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█───█─██─█───█────█────█────██───█");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"██████████████████████████████████");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"████████████████████████████████████████████████████");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█────█────█───████────█─█─█─██─█─██─█───█────█");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█──█──█─██─███──█─██████─██─█─█─█──█─█──█─█─███─██─█");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─█─█─█────██──██───████────█─█─█─█──█─█──█───█────█");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█─██─█──███─██████─█─██─█─█─██─█─██─█─███─█─██");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█─██─█────█───████─█─██───█─██─█─██─█───█─█─██");
+	text_list_[(int)TitleScreenText::kTitle].push_back(L"████████████████████████████████████████████████████");
 }
