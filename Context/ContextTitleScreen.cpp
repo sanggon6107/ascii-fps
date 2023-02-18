@@ -8,6 +8,8 @@ ContextState ContextTitleScreen::Run()
 	SetConsoleActiveScreenBuffer(console);
 	DWORD bytes_written = 0;
 
+	cursor_.SetCursor(text_position_[(int)TitleScreenText::kStart].w_, text_position_[(int)TitleScreenText::kStart].h_);
+
 	while (1)
 	{
 		for (int i = 0; i < screen_height_; i++) { for (int j = 0; j < screen_width_; j++) { screen[i * screen_width_ + j] = L' '; } }
@@ -17,7 +19,8 @@ ContextState ContextTitleScreen::Run()
 		PutText(screen, text_position_[(int)TitleScreenText::kExit].w_, text_position_[(int)TitleScreenText::kExit].h_, TitleScreenText::kExit);
 
 		// 여기에서 키 조작으로 커서 움직이기.
-		PutCorsur(screen, TitleScreenText::kStart);
+		cursor_.ShowCursor(screen);
+
 
 		screen[screen_width_ * screen_height_ - 1] = '\0';
 		WriteConsoleOutputCharacter(console, screen, screen_width_ * screen_height_, { 0, 0 }, &bytes_written);
@@ -36,22 +39,8 @@ void ContextTitleScreen::PutText(wchar_t* screen, int w, int h, TitleScreenText 
 	}
 }
 
-void ContextTitleScreen::PutCorsur(wchar_t* screen, TitleScreenText text_type)
-{
-	const int top = text_position_[(int)text_type].h_;
-	int left = text_position_[(int)text_type].w_ - wcslen(cursor_.image_[0].data()) - cursor_.horizontal_padding_;
-
-	if (left < 1) left = 1;
-
-	for (int height = top; height < top + cursor_.image_.size(); height++)
-	{
-		wchar_t* char_to_put = cursor_.image_[height - top].data();
-		wcscpy_s(&screen[screen_width_ * height + left], wcslen(char_to_put) + 1, char_to_put);
-	}
-}
-
 																											   
-ContextTitleScreen::ContextTitleScreen(int w, int h) : IContext(w, h)										   
+ContextTitleScreen::ContextTitleScreen(int w, int h) : IContext(w, h), cursor_(w, h)
 {																											   
 	for (int list_idx = 0; list_idx < (int)TitleScreenText::kTitleScreenTextSize; list_idx++)				   
 	{																										   
@@ -84,13 +73,6 @@ ContextTitleScreen::ContextTitleScreen(int w, int h) : IContext(w, h)
 	text_list_[(int)TitleScreenText::kExit].push_back(L"███───█────█───█─");
 	text_list_[(int)TitleScreenText::kExit].push_back(L"█────███───█───█─");
 	text_list_[(int)TitleScreenText::kExit].push_back(L"███─██─██─███──█─");
-
-
-	cursor_.image_.push_back(L"──────█───");
-	cursor_.image_.push_back(L"───────██─");
-	cursor_.image_.push_back(L"██████████");
-	cursor_.image_.push_back(L"───────██─");
-	cursor_.image_.push_back(L"──────█───");
 
 	text_position_.resize((int)TitleScreenText::kTitleScreenTextSize, {.w_ = 0, .h_ = 0});
 	text_position_[(int)TitleScreenText::kTitle] = { .w_ = 90,  .h_ = 10 };
