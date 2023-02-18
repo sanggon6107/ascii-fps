@@ -1,0 +1,26 @@
+#pragma once
+
+#include "IContext.h"
+#include "../CommonLib/Cursor.h"
+
+struct ObjectPosition
+{
+	int w_;
+	int h_;
+};
+
+
+enum class TitleScreenText : int { kTitle, kStart, kExit, kTitleScreenTextSize };
+
+class ContextTitleScreen : public IContext
+{
+public :
+	ContextTitleScreen(int w, int h);
+	ContextState Run() override;
+private:
+	void PutText(wchar_t* screen, int w, int h, TitleScreenText text_type);
+
+	vector<vector<wstring>> text_list_;
+	Cursor cursor_;
+	vector<ObjectPosition> text_position_;
+};
