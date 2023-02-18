@@ -8,7 +8,9 @@ ContextState ContextTitleScreen::Run()
 	SetConsoleActiveScreenBuffer(console);
 	DWORD bytes_written = 0;
 
-	cursor_.SetCursor(text_position_[(int)TitleScreenText::kStart].w_, text_position_[(int)TitleScreenText::kStart].h_);
+	int current_cursor_pos = static_cast<int>(TitleScreenText::kStart);
+	cursor_.SetCursor(text_position_[current_cursor_pos].w_, text_position_[current_cursor_pos].h_);
+	
 
 	while (1)
 	{
@@ -18,9 +20,32 @@ ContextState ContextTitleScreen::Run()
 		PutText(screen, text_position_[(int)TitleScreenText::kStart].w_, text_position_[(int)TitleScreenText::kStart].h_, TitleScreenText::kStart);
 		PutText(screen, text_position_[(int)TitleScreenText::kExit].w_, text_position_[(int)TitleScreenText::kExit].h_, TitleScreenText::kExit);
 
-		// 여기에서 키 조작으로 커서 움직이기.
+		if ((GetAsyncKeyState(VK_DOWN) & 0x8000) && current_cursor_pos < (int)TitleScreenText::kTitleScreenTextSize - 1)
+		{
+			++current_cursor_pos;
+			cursor_.SetCursor(text_position_[current_cursor_pos].w_, text_position_[current_cursor_pos].h_);
+		}
+		if ((GetAsyncKeyState(VK_UP) & 0x8000) && current_cursor_pos > (int)TitleScreenText::kStart)
+		{
+			--current_cursor_pos;
+			cursor_.SetCursor(text_position_[current_cursor_pos].w_, text_position_[current_cursor_pos].h_);
+		}
 		cursor_.ShowCursor(screen);
 
+		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+		{
+			switch (current_cursor_pos)
+			{
+			case (int)TitleScreenText::kStart :
+				return ContextState::kContextGamePlay;
+
+			case (int)TitleScreenText::kExit :
+				return ContextState::kContextExit;
+
+			default :
+				return ContextState::kContextExit;
+			}
+		}
 
 		screen[screen_width_ * screen_height_ - 1] = '\0';
 		WriteConsoleOutputCharacter(console, screen, screen_width_ * screen_height_, { 0, 0 }, &bytes_written);
