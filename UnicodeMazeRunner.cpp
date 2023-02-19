@@ -22,7 +22,7 @@ int map_width = 17;
 constexpr float fov = 3.141592f / 4.0f; // field of view. pi / 4 만큼의 각도가 보인다고 한다.
 constexpr float depth = 16.0f; // 앞에 벽이 있는지 확인하기 위한 최대 깊이.
 
-array<int, static_cast<int>(depth) + 1> shades{ 0x2593, 0x2592, 0x2591, 0x256A, 0x253C, 0x253C, 0x250C, 0x250C, 0x2500, 0x2500, 0x2500, 0x2509, 0x2509, 0x2509, 0x2508, 0x2508, 0x2508 };
+array<int, static_cast<int>(depth) + 1> wall_shades{ 0x2592, 0x2592, 0x256A, 0x253C, 0x253C, 0x250C, 0x250C, 0x2500, 0x2500, 0x2500, 0x2509, 0x2509, 0x2509, 0x2508, 0x2508, 0x2508, 0x2508 };
 class Player
 {
 public :
@@ -151,7 +151,7 @@ int main()
 
             short shade = ' ';
             if (distance_to_wall > 16.0f) distance_to_wall = 16.0f;
-            shade = shades[static_cast<int>(distance_to_wall)];
+            shade = wall_shades[static_cast<int>(distance_to_wall)];
             if (is_boundary) shade = ' ';
 
             for (int y = 0; y < screen_height; y++)
