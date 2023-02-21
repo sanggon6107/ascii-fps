@@ -15,7 +15,7 @@ enum class TitleScreenText : int { kTitle, kStart, kExit, kTitleScreenTextSize }
 class ContextTitleScreen : public IContext
 {
 public :
-	ContextTitleScreen(int w, int h);
+	ContextTitleScreen();
 	ContextState Run() override;
 private:
 	void PutText(wchar_t* screen, int w, int h, TitleScreenText text_type);
@@ -23,4 +23,7 @@ private:
 	vector<vector<wstring>> text_list_;
 	Cursor cursor_;
 	vector<ObjectPosition> text_position_;
+
+	DECLARE_CONTEXT_FACTORY(ContextTitleScreen)
 };
+IMPLEMENT_CONTEXT_FACTORY(ContextState::kContextTitleScreen, ContextTitleScreen)

@@ -65,7 +65,7 @@ void ContextTitleScreen::PutText(wchar_t* screen, int w, int h, TitleScreenText 
 }
 
 																											   
-ContextTitleScreen::ContextTitleScreen(int w, int h) : IContext(w, h), cursor_(w, h)
+ContextTitleScreen::ContextTitleScreen() : cursor_(w, h)
 {																											   
 	for (int list_idx = 0; list_idx < (int)TitleScreenText::kTitleScreenTextSize; list_idx++)				   
 	{																										   

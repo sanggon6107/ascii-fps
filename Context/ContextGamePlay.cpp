@@ -1,8 +1,6 @@
 #include "ContextGamePlay.h"
 
-ContextGamePlay::ContextGamePlay(int screen_width, int screen_height) : IContext(screen_width, screen_height)
-{
-}
+ContextGamePlay::ContextGamePlay() {}
 
 ContextState ContextGamePlay::Run()
 {

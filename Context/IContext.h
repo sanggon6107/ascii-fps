@@ -4,19 +4,60 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <map>
+
+#include "../CommonLib/CommonUtil.h"
+#include "../CommonLib/MapCreator.h"
+#include "../CommonLib/ScreenMgr.h"
+
 
 using namespace std;
+typedef unique_ptr<IContext>(*CREATOR)();
 
-enum class ContextState { kContextGamePlay, kContextTitleScreen, kContextExit };
+class ContextFactory
+{
+	MAKE_SINGLETON(ContextFactory)
+public:
+	unique_ptr<IContext> CreateContext(ContextState context_state)
+	{
+		unique_ptr<IContext> ptr = nullptr;
+		auto ret = create_map_.find(context_state);
+
+		if (ret == create_map_.end()) return nullptr;
+
+		ptr = create_map_[context_state]();
+
+		return ptr;
+	}
+
+	
+	void Register(ContextState context_state, CREATOR f)
+	{
+		create_map_[context_state] = f;
+	}
+private:
+
+	map<ContextState, CREATOR> create_map_;
+	vector<IContext> context_products_;
+};
+
+class FactoryRegister
+{
+public:
+	FactoryRegister(ContextState context_state, CREATOR creator)
+	{
+		auto& factory = ContextFactory::GetInstance();
+		factory.Register(context_state, creator);
+	}
+};
+
 
 class IContext
 {
-public :
+public:
 	virtual ContextState Run() = 0;
 	virtual ~IContext() {}
-protected :
-	IContext(int w, int h);
+protected:
+	IContext();
 
-	int screen_height_;
-	int screen_width_;
 };
