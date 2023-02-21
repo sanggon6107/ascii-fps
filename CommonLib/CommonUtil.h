@@ -1,8 +1,5 @@
 #pragma once
 
-
-
-
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 80
 
@@ -12,7 +9,7 @@
 
 #define MAKE_SINGLETON(classname)			     \
 private :										 \
-	classname() {}								 \
+	classname();								 \
 	classname(const classname& c) = delete;		 \
 	void operator=(const classname&) = delete;   \
 public :										 \

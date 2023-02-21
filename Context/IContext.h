@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <memory>
 
 #include "../CommonLib/CommonUtil.h"
 #include "../CommonLib/MapCreator.h"
@@ -30,7 +31,6 @@ public:
 		return ptr;
 	}
 
-	
 	void Register(ContextState context_state, CREATOR f)
 	{
 		create_map_[context_state] = f;
@@ -38,7 +38,6 @@ public:
 private:
 
 	map<ContextState, CREATOR> create_map_;
-	vector<IContext> context_products_;
 };
 
 class FactoryRegister
@@ -59,5 +58,7 @@ public:
 	virtual ~IContext() {}
 protected:
 	IContext();
-
+	int screen_width_;
+	int screen_height_;
+	shared_ptr<wchar_t[]> screen_;
 };

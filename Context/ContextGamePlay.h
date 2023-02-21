@@ -7,8 +7,11 @@
 #include <cmath>
 #include <array>
 #include <ahadmin.h>
+
 #include "../CommonLib/MapCreator.h"
+//#include "../CommonLib/CommonUtil.h"
 #include "IContext.h"
+
 
 using namespace std;
 
@@ -25,7 +28,7 @@ public:
 	ContextGamePlay();
 	ContextState Run() override;
 private:
-	vector<int> wall_shades{ 0x2599, 0x2599, 0x256A, 0x253C, 0x253C, 0x250C, 0x250C, 0x2500, 0x2500, 0x2500, 0x2509, 0x2509, 0x2509, 0x2508, 0x2508, 0x2508, 0x2508 };
+	vector<int> wall_shades_{ 0x2599, 0x2599, 0x256A, 0x253C, 0x253C, 0x250C, 0x250C, 0x2500, 0x2500, 0x2500, 0x2509, 0x2509, 0x2509, 0x2508, 0x2508, 0x2508, 0x2508 };
 	DECLARE_CONTEXT_FACTORY(ContextGamePlay)
 };
 IMPLEMENT_CONTEXT_FACTORY(ContextState::kContextGamePlay, ContextGamePlay)

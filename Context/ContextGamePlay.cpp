@@ -116,7 +116,7 @@ ContextState ContextGamePlay::Run()
 
             short shade = ' ';
             if (distance_to_wall > 16.0f) distance_to_wall = 16.0f;
-            shade = wall_shades[static_cast<int>(distance_to_wall)];
+            shade = wall_shades_[static_cast<int>(distance_to_wall)];
             if (is_boundary) shade = ' ';
 
             for (int y = 0; y < screen_height_; y++)

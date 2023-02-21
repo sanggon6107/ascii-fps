@@ -15,6 +15,9 @@ void MapCreator::Export(wstring& out)
 
 MapCreator::MapCreator(int w, int h) : w_(w), h_(h)
 {
+	auto& screen_mgr = ScreenMgr::GetInstance();
+	w_ = screen_mgr.GetScreenWidth();
+	h_ = screen_mgr.GetScreenHeight();
 	InitMap();
 	CreateMaze();
 }

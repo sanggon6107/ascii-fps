@@ -14,9 +14,7 @@ class Game
 public :
 	Game();
 	
-public :
-	unique_ptr<ScreenMgr> screen_mgr_;
-	unique_ptr<MapCreator> map_creator_;
+private :
 	vector<unique_ptr<IContext>> context_;
 };
 

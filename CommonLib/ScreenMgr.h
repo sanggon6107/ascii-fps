@@ -1,16 +1,20 @@
 #pragma once
 #include <Windows.h>
 #include <memory>
+#include "CommonUtil.h"
 
 using namespace std;
 
 class ScreenMgr
 {
+	MAKE_SINGLETON(ScreenMgr)
 public :
-	ScreenMgr(int screen_width, int screen_height_);
 	void Show();
+	int GetScreenWidth() { return screen_width_; }
+	int GetScreenHeight() { return screen_height_; }
+	shared_ptr<wchar_t[]> GetScreen() { return screen_; }
 private :
-	unique_ptr<wchar_t[]> screen_;
+	shared_ptr<wchar_t[]> screen_;
 	HANDLE console_;
 	DWORD bytes_written_;
 	

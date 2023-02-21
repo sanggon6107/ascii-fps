@@ -1,8 +1,11 @@
 #include "ScreenMgr.h"
 
-ScreenMgr::ScreenMgr(int screen_width, int screen_height) : screen_width_(screen_width), screen_height_(screen_height), bytes_written_(0)
+ScreenMgr::ScreenMgr()
 {
-	screen_ = make_unique<wchar_t[]>(screen_width_ * screen_height_);
+	screen_width_ = SCREEN_WIDTH;
+	screen_height_ = SCREEN_HEIGHT;
+	bytes_written_ = 0;
+	screen_ = make_shared<wchar_t[]>(screen_width_ * screen_height_);
 	console_ = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 	SetConsoleActiveScreenBuffer(console_);
 }
