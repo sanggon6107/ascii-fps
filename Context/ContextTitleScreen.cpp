@@ -11,7 +11,7 @@ ContextState ContextTitleScreen::Run()
 	int current_cursor_pos = static_cast<int>(TitleScreenText::kStart);
 	cursor_.SetCursor(text_position_[current_cursor_pos].w_, text_position_[current_cursor_pos].h_);
 	
-
+	
 	while (1)
 	{
 		for (int i = 0; i < screen_height_; i++) { for (int j = 0; j < screen_width_; j++) { screen[i * screen_width_ + j] = L' '; } }

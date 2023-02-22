@@ -85,7 +85,7 @@ tuple<Direction, int, int> MapCreator::CanMoveOn(mt19937 & engine, int w, int h)
 	}
 	
 	if (candidate.size() == 0) return make_tuple(Direction::disable, w, h);
-	uniform_int_distribution<int> distribution(0, candidate.size() - 1);
+	uniform_int_distribution<int> distribution(0, static_cast<int>(candidate.size()) - 1);
 
 	int dir = candidate[distribution(engine)];
 

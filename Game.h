@@ -13,8 +13,9 @@ class Game
 {
 public :
 	Game();
-	
+	void Launch();
 private :
 	vector<unique_ptr<IContext>> context_;
+	unique_ptr<ContextFactory> context_factory_;
 };
 

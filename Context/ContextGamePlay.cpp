@@ -1,6 +1,6 @@
 #include "ContextGamePlay.h"
 
-ContextGamePlay::ContextGamePlay() {}
+ContextGamePlay::ContextGamePlay(){}
 
 ContextState ContextGamePlay::Run()
 {

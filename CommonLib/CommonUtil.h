@@ -28,4 +28,4 @@ public:																	   \
 FactoryRegister class_name::rs(context_state, &class_name::Create);
 
 
-enum class ContextState { kContextGamePlay, kContextTitleScreen, kContextExit };
+enum class ContextState : int { kContextGamePlay, kContextTitleScreen, kContextExit, kContextStateMaxSize };
