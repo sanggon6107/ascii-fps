@@ -5,7 +5,9 @@ ContextState ContextTitleScreen::Run()
 {
 	int current_cursor_pos = static_cast<int>(TitleScreenText::kStart);
 	cursor_.SetCursor(text_position_[current_cursor_pos].w_, text_position_[current_cursor_pos].h_);
-		
+	
+	auto& screen_mgr = ScreenMgr::GetInstance();
+
 	while (1)
 	{
 		for (int i = 0; i < screen_height_; i++) { for (int j = 0; j < screen_width_; j++) { screen_[i * screen_width_ + j] = L' '; } }
@@ -40,7 +42,7 @@ ContextState ContextTitleScreen::Run()
 				return ContextState::kContextExit;
 			}
 		}
-		screen_mgr_->Show();
+		screen_mgr.Show();
 	}
 
 	return ContextState::kContextTitleScreen;

@@ -61,5 +61,4 @@ protected:
 	int screen_width_;
 	int screen_height_;
 	shared_ptr<wchar_t[]> screen_;
-	shared_ptr<ScreenMgr> screen_mgr_;
 };
