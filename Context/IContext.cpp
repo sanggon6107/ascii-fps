@@ -2,10 +2,9 @@
 
 ContextFactory::ContextFactory() {}
 
-IContext::IContext()
+IContext::IContext() : screen_mgr_(&ScreenMgr::GetInstance())
 {
-	auto& screen_mgr = ScreenMgr::GetInstance();
-	screen_width_ = screen_mgr.GetScreenWidth();
-	screen_height_ = screen_mgr.GetScreenHeight();
-	screen_ = screen_mgr.GetScreen();
+	screen_width_ = screen_mgr_->GetScreenWidth();
+	screen_height_ = screen_mgr_->GetScreenHeight();
+	screen_ = screen_mgr_->GetScreen();
 }
