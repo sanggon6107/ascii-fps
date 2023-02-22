@@ -40,8 +40,6 @@ ContextState ContextTitleScreen::Run()
 				return ContextState::kContextExit;
 			}
 		}
-
-		screen_[screen_width_ * screen_height_ - 1] = '\0';
 		screen_mgr_->Show();
 	}
 
@@ -98,4 +96,15 @@ ContextTitleScreen::ContextTitleScreen() : cursor_(screen_width_, screen_height_
 	text_position_[(int)TitleScreenText::kStart] = { .w_ = 100, .h_ = 40 };
 	text_position_[(int)TitleScreenText::kExit]  = { .w_ = 100, .h_ = 50 };
 
+}
+
+int main()
+{
+
+	constexpr int screen_width = 240;
+	constexpr int screen_height = 80;
+
+	shared_ptr<IContext> ptr = make_shared<ContextTitleScreen>();
+	ptr->Run();
+	return 0;
 }
