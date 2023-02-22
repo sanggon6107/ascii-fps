@@ -10,10 +10,7 @@ ContextState ContextGamePlay::Run()
     constexpr float fov = 3.141592f / 4.0f;
     constexpr float depth = 16.0f;
 
-    wchar_t* screen = new wchar_t[screen_width_ * screen_height_];
-    HANDLE console = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
-    SetConsoleActiveScreenBuffer(console);
-    DWORD bytes_written = 0;
+    auto& screen_mgr = ScreenMgr::GetInstance();
 
     Player player{ .x_ = 1.0f, .y_ = 1.0f, .ang_ = 0.0f };
 
@@ -123,32 +120,28 @@ ContextState ContextGamePlay::Run()
             {
                 if (y < ceiling)
                 {
-                    screen[y * screen_width_ + x] = ' ';
+                    screen_[y * screen_width_ + x] = ' ';
                 }
                 else if (y > floor) 
                 {
-                    if (y < static_cast<int>(screen_height_ / 2) * 1.45)  screen[y * screen_width_ + x] = '.';
-                    else  screen[y * screen_width_ + x] = 'X';
+                    if (y < static_cast<int>(screen_height_ / 2) * 1.45)  screen_[y * screen_width_ + x] = '.';
+                    else  screen_[y * screen_width_ + x] = 'X';
 
                 }
                 else
                 {
-                    screen[y * screen_width_ + x] = shade;
+                    screen_[y * screen_width_ + x] = shade;
                 }
             }
-
-
-
         }
 
         map[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'P';
         for (int pos = 0; pos < map.size(); pos++)
         {
-            screen[static_cast<int>(pos / map_width) * screen_width_ + pos % map_width] = map[pos];
+            screen_[static_cast<int>(pos / map_width) * screen_width_ + pos % map_width] = map[pos];
         }
 
-        screen[screen_width_ * screen_height_ - 1] = '\0';
-        WriteConsoleOutputCharacter(console, screen, screen_width_ * screen_height_, { 0, 0 }, &bytes_written);
+        screen_mgr.Show();
         map[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'.';
     }
 
