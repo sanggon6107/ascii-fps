@@ -12,9 +12,9 @@ ContextState ContextTitleScreen::Run()
 	{
 		for (int i = 0; i < screen_height_; i++) { for (int j = 0; j < screen_width_; j++) { screen_[i * screen_width_ + j] = L' '; } }
 
-		PutText(screen_.get(), text_position_[(int)TitleScreenText::kTitle].w_, text_position_[(int)TitleScreenText::kTitle].h_, TitleScreenText::kTitle);
-		PutText(screen_.get(), text_position_[(int)TitleScreenText::kStart].w_, text_position_[(int)TitleScreenText::kStart].h_, TitleScreenText::kStart);
-		PutText(screen_.get(), text_position_[(int)TitleScreenText::kExit].w_, text_position_[(int)TitleScreenText::kExit].h_, TitleScreenText::kExit);
+		PutText(screen_, text_position_[(int)TitleScreenText::kTitle].w_, text_position_[(int)TitleScreenText::kTitle].h_, TitleScreenText::kTitle);
+		PutText(screen_, text_position_[(int)TitleScreenText::kStart].w_, text_position_[(int)TitleScreenText::kStart].h_, TitleScreenText::kStart);
+		PutText(screen_, text_position_[(int)TitleScreenText::kExit].w_, text_position_[(int)TitleScreenText::kExit].h_, TitleScreenText::kExit);
 
 		if ((GetAsyncKeyState(VK_DOWN) & 0x8000) && current_cursor_pos < (int)TitleScreenText::kTitleScreenTextSize - 1)
 		{
@@ -48,13 +48,16 @@ ContextState ContextTitleScreen::Run()
 	return ContextState::kContextTitleScreen;
 }
 
-void ContextTitleScreen::PutText(wchar_t* screen, int w, int h, TitleScreenText text_type)
+void ContextTitleScreen::PutText(shared_ptr<wchar_t[]> screen, int w, int h, TitleScreenText text_type)
 {
 	//w and h should be bigger than 0.
 	for (int height = h; height < h + text_list_[(int)text_type].size(); height++)
 	{
 		wchar_t* char_to_put = text_list_[(int)text_type][height - h].data();
-		wcscpy_s(&screen[screen_width_ * height + w], wcslen(char_to_put) + 1, char_to_put);
+		for (int x_pos = 0; x_pos < wcslen(char_to_put); x_pos++)
+		{
+			screen_[screen_width_ * height + w + x_pos] = text_list_[(int)text_type][height - h][x_pos];
+		}
 	}
 }
 

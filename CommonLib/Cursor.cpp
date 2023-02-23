@@ -16,7 +16,10 @@ void Cursor::ShowCursor(wchar_t* screen)
 	for (int height = top; height < top + static_cast<int>(image_.size()); height++)
 	{
 		wchar_t* char_to_put = image_[height - top].data();
-		wcscpy_s(&screen[screen_width_ * height + left], wcslen(char_to_put) + 1, char_to_put);
+		for (int x_pos = 0; x_pos < wcslen(char_to_put); x_pos++)
+		{
+			screen[screen_width_ * height + left + x_pos] = image_[height - top][x_pos];
+		}
 	}
 }
 

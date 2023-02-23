@@ -18,7 +18,7 @@ public :
 	ContextTitleScreen();
 	ContextState Run() override;
 private:
-	void PutText(wchar_t* screen, int w, int h, TitleScreenText text_type);
+	void PutText(shared_ptr<wchar_t[]> screen, int w, int h, TitleScreenText text_type);
 
 	vector<vector<wstring>> text_list_;
 	Cursor cursor_;
