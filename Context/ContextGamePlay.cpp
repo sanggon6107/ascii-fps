@@ -28,6 +28,11 @@ ContextState ContextGamePlay::Run()
         tp_1 = tp_2;
         float f_elapsed_time = elapsed_time.count();
 
+        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+        {
+            return ContextState::kContextTitleScreen;
+        }
+
         if (GetAsyncKeyState((unsigned short)'A') & 0x8000)
         {
             player.ang_ -= 2.5f * f_elapsed_time;
