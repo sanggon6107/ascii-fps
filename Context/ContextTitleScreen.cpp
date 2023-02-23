@@ -12,9 +12,9 @@ ContextState ContextTitleScreen::Run()
 	{
 		for (int i = 0; i < screen_height_; i++) { for (int j = 0; j < screen_width_; j++) { screen_[i * screen_width_ + j] = L' '; } }
 
-		PutText(screen_, text_position_[(int)TitleScreenText::kTitle].w_, text_position_[(int)TitleScreenText::kTitle].h_, TitleScreenText::kTitle);
-		PutText(screen_, text_position_[(int)TitleScreenText::kStart].w_, text_position_[(int)TitleScreenText::kStart].h_, TitleScreenText::kStart);
-		PutText(screen_, text_position_[(int)TitleScreenText::kExit].w_, text_position_[(int)TitleScreenText::kExit].h_, TitleScreenText::kExit);
+		PutText(text_position_[(int)TitleScreenText::kTitle].w_, text_position_[(int)TitleScreenText::kTitle].h_, TitleScreenText::kTitle);
+		PutText(text_position_[(int)TitleScreenText::kStart].w_, text_position_[(int)TitleScreenText::kStart].h_, TitleScreenText::kStart);
+		PutText(text_position_[(int)TitleScreenText::kExit].w_, text_position_[(int)TitleScreenText::kExit].h_, TitleScreenText::kExit);
 
 		if ((GetAsyncKeyState(VK_DOWN) & 0x8000) && current_cursor_pos < (int)TitleScreenText::kTitleScreenTextSize - 1)
 		{
@@ -48,7 +48,7 @@ ContextState ContextTitleScreen::Run()
 	return ContextState::kContextTitleScreen;
 }
 
-void ContextTitleScreen::PutText(shared_ptr<wchar_t[]> screen, int w, int h, TitleScreenText text_type)
+void ContextTitleScreen::PutText(int w, int h, TitleScreenText text_type)
 {
 	//w and h should be bigger than 0.
 	for (int height = h; height < h + text_list_[(int)text_type].size(); height++)
