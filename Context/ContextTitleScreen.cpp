@@ -84,17 +84,17 @@ ContextTitleScreen::ContextTitleScreen() : cursor_(screen_width_, screen_height_
 	text_list_[(int)TitleScreenText::kTitle].push_back(L"█─███─█─██─█────█───████─█─██───█─██─█─██─█───█─█─██");
 	text_list_[(int)TitleScreenText::kTitle].push_back(L"████████████████████████████████████████████████████");
 
-	text_list_[(int)TitleScreenText::kStart].push_back(L"███─███─████─████─███");
-	text_list_[(int)TitleScreenText::kStart].push_back(L"█────█──█──█─█──█──█─");
-	text_list_[(int)TitleScreenText::kStart].push_back(L"███──█──████─████──█─");
-	text_list_[(int)TitleScreenText::kStart].push_back(L"──█──█──█──█─█─█───█─");
-	text_list_[(int)TitleScreenText::kStart].push_back(L"███──█──█──█─█─█───█─");
+	text_list_[(int)TitleScreenText::kStart].push_back(L"███ ███ ████ ████ ███");
+	text_list_[(int)TitleScreenText::kStart].push_back(L"█    █  █  █ █  █  █ ");
+	text_list_[(int)TitleScreenText::kStart].push_back(L"███  █  ████ ████  █ ");
+	text_list_[(int)TitleScreenText::kStart].push_back(L"  █  █  █  █ █ █   █ ");
+	text_list_[(int)TitleScreenText::kStart].push_back(L"███  █  █  █ █  █  █ ");
 
-	text_list_[(int)TitleScreenText::kExit].push_back(L"███─██─██─███─███");
-	text_list_[(int)TitleScreenText::kExit].push_back(L"█────███───█───█─");
-	text_list_[(int)TitleScreenText::kExit].push_back(L"███───█────█───█─");
-	text_list_[(int)TitleScreenText::kExit].push_back(L"█────███───█───█─");
-	text_list_[(int)TitleScreenText::kExit].push_back(L"███─██─██─███──█─");
+	text_list_[(int)TitleScreenText::kExit].push_back(L"███ ██ ██ ███ ███");
+	text_list_[(int)TitleScreenText::kExit].push_back(L"█    ███   █   █ ");
+	text_list_[(int)TitleScreenText::kExit].push_back(L"███   █    █   █ ");
+	text_list_[(int)TitleScreenText::kExit].push_back(L"█    ███   █   █ ");
+	text_list_[(int)TitleScreenText::kExit].push_back(L"███ ██ ██ ███  █ ");
 
 	text_position_.resize((int)TitleScreenText::kTitleScreenTextSize, {.w_ = 0, .h_ = 0});
 	text_position_[(int)TitleScreenText::kTitle] = { .w_ = 90,  .h_ = 10 };

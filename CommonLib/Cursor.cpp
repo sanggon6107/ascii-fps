@@ -22,9 +22,9 @@ void Cursor::ShowCursor(wchar_t* screen)
 
 Cursor::Cursor(int screen_width, int screen_height) : cursor_w_(0), cursor_h_(0), screen_width_(screen_width), screen_height_(screen_height), horizontal_padding_(HORIZONTAL_PADDING)
 {
-	image_.push_back(L"──────█───");
-	image_.push_back(L"───────██─");
+	image_.push_back(L"      █   ");
+	image_.push_back(L"       ██ ");
 	image_.push_back(L"██████████");
-	image_.push_back(L"───────██─");
-	image_.push_back(L"──────█───");
+	image_.push_back(L"       ██ ");
+	image_.push_back(L"      █   ");
 }
