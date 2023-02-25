@@ -2,6 +2,13 @@
 
 using namespace std;
 
+void MapCreator::GetCurrentMapInfo(MapInfo& map_info)
+{
+	map_info.map_width_ = map_width_;
+	map_info.map_height_ = map_height_;
+	Export(map_info.map_);
+}
+
 void MapCreator::Export(wstring& out)
 {
 	for (auto& row : map_)
@@ -13,7 +20,7 @@ void MapCreator::Export(wstring& out)
 	}
 }
 
-MapCreator::MapCreator(int w, int h) : w_(w), h_(h)
+MapCreator::MapCreator(int w, int h) : map_width_(w), map_height_(h)
 {
 	InitMap();
 	CreateMaze();
@@ -21,16 +28,16 @@ MapCreator::MapCreator(int w, int h) : w_(w), h_(h)
 
 void MapCreator::InitMap()
 {
-	for (int row = 0; row < h_; row++)
+	for (int row = 0; row < map_height_; row++)
 	{
-		map_.emplace_back(w_, L"#");
+		map_.emplace_back(map_width_, L"#");
 
-		if (row == 0 || row == h_ - 1 || row % 2 == 0) continue;
+		if (row == 0 || row == map_height_ - 1 || row % 2 == 0) continue;
 
-		for (int col = 1; col < w_ - 1; ++(++col)) { map_[row][col] = L"."; }
+		for (int col = 1; col < map_width_ - 1; ++(++col)) { map_[row][col] = L"."; }
 	}
 
-	for (int row = 0; row < h_; row++) { visited_.emplace_back(w_, false); }
+	for (int row = 0; row < map_height_; row++) { visited_.emplace_back(map_width_, false); }
 }
 
 void MapCreator::CreateMaze()
@@ -75,8 +82,8 @@ tuple<Direction, int, int> MapCreator::CanMoveOn(mt19937 & engine, int w, int h)
 	{
 		int w_temp = w + w_delta_[dir];
 		int h_temp = h + h_delta_[dir];
-		if (w_temp <= 0 || w_temp >= w_ - 1)  continue;
-		if (h_temp <= 0 || h_temp >= h_ - 1)  continue;
+		if (w_temp <= 0 || w_temp >= map_width_ - 1)  continue;
+		if (h_temp <= 0 || h_temp >= map_height_ - 1)  continue;
 		if (visited_[h_temp][w_temp] == true) continue;
 		candidate.push_back(dir);
 	}
@@ -91,9 +98,9 @@ tuple<Direction, int, int> MapCreator::CanMoveOn(mt19937 & engine, int w, int h)
 
 tuple<int, int> MapCreator::Hunt()
 {
-	for (int h = 1; h < h_ - 1; ++(++h))
+	for (int h = 1; h < map_height_ - 1; ++(++h))
 	{
-		for (int w = 1; w < w_ - 1; ++(++w))
+		for (int w = 1; w < map_width_ - 1; ++(++w))
 		{
 			if (visited_[h][w] == true) continue;
 
@@ -101,8 +108,8 @@ tuple<int, int> MapCreator::Hunt()
 			{
 				int h_temp = h + h_delta_[dir];
 				int w_temp = w + w_delta_[dir];
-				if (w_temp <= 0 || w_temp >= w_ - 2)  continue;
-				if (h_temp <= 0 || h_temp >= h_ - 2)  continue;
+				if (w_temp <= 0 || w_temp >= map_width_ - 2)  continue;
+				if (h_temp <= 0 || h_temp >= map_height_ - 2)  continue;
 				if (visited_[h_temp][w_temp] == false) continue;
 				
 				map_[h + (h_delta_[dir] / 2)][w + (w_delta_[dir] / 2)] = L".";

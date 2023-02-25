@@ -9,9 +9,9 @@
 #include <ahadmin.h>
 
 #include "../CommonLib/MapCreator.h"
-//#include "../CommonLib/CommonUtil.h"
 #include "IContext.h"
 
+enum class CharactorDirection { kForward, kBackward, kLeft, kRight };
 
 using namespace std;
 
@@ -29,8 +29,8 @@ public:
 	ContextState Run() override;
 private:
 	vector<int> wall_shades_{ 0x2599, 0x2599, 0x256A, 0x253C, 0x253C, 0x250C, 0x250C, 0x2500, 0x2500, 0x2500, 0x2509, 0x2509, 0x2509, 0x2508, 0x2508, 0x2508, 0x2508 };
-	//int map_width_;
-	//int map_height_;
+	void MoveOnUserKeyUpdate(Player& player, MapInfo& map_info, float elapsed_time, CharactorDirection charactor_direction);
+
 	DECLARE_CONTEXT_FACTORY(ContextGamePlay)
 };
 IMPLEMENT_CONTEXT_FACTORY(ContextState::kContextGamePlay, ContextGamePlay)

@@ -14,9 +14,9 @@ ContextState ContextGamePlay::Run()
 
     Player player{ .x_ = 1.0f, .y_ = 1.0f, .ang_ = 0.0f };
 
-    std::wstring map;
     std::shared_ptr<MapCreator> map_creator = make_shared<MapCreator>(map_width, map_height);
-    map_creator->Export(map);
+    MapInfo map_info;
+    map_creator->GetCurrentMapInfo(map_info);
 
     auto tp_1 = std::chrono::system_clock::now();
     auto tp_2 = std::chrono::system_clock::now();
@@ -28,48 +28,12 @@ ContextState ContextGamePlay::Run()
         tp_1 = tp_2;
         float f_elapsed_time = elapsed_time.count();
 
-        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
-        {
-            return ContextState::kContextTitleScreen;
-        }
+        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) { return ContextState::kContextTitleScreen; }
 
-        if (GetAsyncKeyState((unsigned short)'A') & 0x8000)
-        {
-            player.ang_ -= 2.5f * f_elapsed_time;
-        }
-
-        if (GetAsyncKeyState((unsigned short)'D') & 0x8000)
-        {
-            //player_ang += (0.001f);
-            player.ang_ += 2.5f * f_elapsed_time;
-        }
-
-        if (GetAsyncKeyState((unsigned short)'W') & 0x8000)
-        {
-
-            float player_x_temp = player.x_ + cosf(player.ang_) * 5.0f * f_elapsed_time;
-            float player_y_temp = player.y_ + sinf(player.ang_) * 5.0f * f_elapsed_time;
-
-            if (map[static_cast<int>(std::round(player_y_temp)) * map_width + static_cast<int>(std::round(player_x_temp))] != '#')
-            {
-                player.x_ = player_x_temp;
-                player.y_ = player_y_temp;
-            }
-        }
-
-        if (GetAsyncKeyState((unsigned short)'S') & 0x8000)
-        {
-            float player_x_temp = player.x_ - cosf(player.ang_) * 5.0f * f_elapsed_time;
-            float player_y_temp = player.y_ - sinf(player.ang_) * 5.0f * f_elapsed_time;
-
-            if (map[static_cast<int>(std::round(player_y_temp)) * map_width + static_cast<int>(std::round(player_x_temp))] != '#')
-            {
-                player.x_ = player_x_temp;
-                player.y_ = player_y_temp;
-            }
-        }
-
-
+        if (GetAsyncKeyState((unsigned short)'A') & 0x8000) { MoveOnUserKeyUpdate(player, map_info, f_elapsed_time, CharactorDirection::kLeft); }
+        if (GetAsyncKeyState((unsigned short)'D') & 0x8000) { MoveOnUserKeyUpdate(player, map_info, f_elapsed_time, CharactorDirection::kRight); }
+        if (GetAsyncKeyState((unsigned short)'W') & 0x8000) { MoveOnUserKeyUpdate(player, map_info, f_elapsed_time, CharactorDirection::kForward); }
+        if (GetAsyncKeyState((unsigned short)'S') & 0x8000) { MoveOnUserKeyUpdate(player, map_info, f_elapsed_time, CharactorDirection::kBackward); }
 
         for (int x = 0; x < screen_width_; x++)
         {   
@@ -99,7 +63,7 @@ ContextState ContextGamePlay::Run()
                     is_hit_wall = true;
                     distance_to_wall = depth;
                 }
-                else if (map[test_y * map_width + test_x] == '#')
+                else if (map_info.map_[test_y * map_width + test_x] == '#')
                 {
                     is_hit_wall = true;
 
@@ -140,15 +104,54 @@ ContextState ContextGamePlay::Run()
             }
         }
 
-        map[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'P';
-        for (int pos = 0; pos < map.size(); pos++)
+        map_info.map_[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'P';
+        for (int pos = 0; pos < map_info.map_.size(); pos++)
         {
-            screen_[static_cast<int>(pos / map_width) * screen_width_ + pos % map_width] = map[pos];
+            screen_[static_cast<int>(pos / map_width) * screen_width_ + pos % map_width] = map_info.map_[pos];
         }
 
         screen_mgr.Show();
-        map[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'.';
+        map_info.map_[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'.';
     }
 
 	return ContextState::kContextExit;
+}
+
+
+void ContextGamePlay::MoveOnUserKeyUpdate(Player& player, MapInfo& map_info, float elapsed_time, CharactorDirection charactor_direction)
+{
+    float player_x_temp = 0.0;
+    float player_y_temp = 0.0;
+
+    switch (charactor_direction)
+    {
+    case CharactorDirection::kForward:
+        player_x_temp = player.x_ + cosf(player.ang_) * 5.0f * elapsed_time;
+        player_y_temp = player.y_ + sinf(player.ang_) * 5.0f * elapsed_time;
+        break;
+
+    case CharactorDirection::kBackward:
+        player_x_temp = player.x_ - cosf(player.ang_) * 5.0f * elapsed_time;
+        player_y_temp = player.y_ - sinf(player.ang_) * 5.0f * elapsed_time;
+        break;
+
+    case CharactorDirection::kLeft:
+        player_x_temp = player.x_ + sinf(player.ang_) * 5.0f * elapsed_time;
+        player_y_temp = player.y_ - cosf(player.ang_) * 5.0f * elapsed_time;
+        break;
+
+    case CharactorDirection::kRight:
+        player_x_temp = player.x_ - sinf(player.ang_) * 5.0f * elapsed_time;
+        player_y_temp = player.y_ + cosf(player.ang_) * 5.0f * elapsed_time;
+        break;
+
+    default:
+        break;
+    }
+
+    if (map_info.map_[static_cast<int>(std::round(player_y_temp)) * map_info.map_width_ + static_cast<int>(std::round(player_x_temp))] != '#')
+    {
+        player.x_ = player_x_temp;
+        player.y_ = player_y_temp;
+    }
 }
