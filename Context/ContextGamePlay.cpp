@@ -23,12 +23,12 @@ ContextState ContextGamePlay::Run()
 
     while (1)
     {
-        
-
         tp_2 = std::chrono::system_clock::now();
         std::chrono::duration<float> elapsed_time = tp_2 - tp_1; // 프레임 전환 지체 시간.
         tp_1 = tp_2;
         float f_elapsed_time = elapsed_time.count();
+
+        if (round(player.x_) == map_width - 2 && round(player.y_) == map_height - 2) { return ContextState::kContextTitleScreen; }
 
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) { return ContextState::kContextTitleScreen; }
 
