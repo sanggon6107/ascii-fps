@@ -1,6 +1,6 @@
 #include "ContextGamePlay.h"
 
-ContextGamePlay::ContextGamePlay() {}
+ContextGamePlay::ContextGamePlay() : mouse_() {}
 
 ContextState ContextGamePlay::Run()
 {
@@ -23,6 +23,8 @@ ContextState ContextGamePlay::Run()
 
     while (1)
     {
+        
+
         tp_2 = std::chrono::system_clock::now();
         std::chrono::duration<float> elapsed_time = tp_2 - tp_1; // 프레임 전환 지체 시간.
         tp_1 = tp_2;
@@ -34,6 +36,8 @@ ContextState ContextGamePlay::Run()
         if (GetAsyncKeyState((unsigned short)'D') & 0x8000) { MoveOnUserKeyUpdate(player, map_info, f_elapsed_time, CharactorDirection::kRight); }
         if (GetAsyncKeyState((unsigned short)'W') & 0x8000) { MoveOnUserKeyUpdate(player, map_info, f_elapsed_time, CharactorDirection::kForward); }
         if (GetAsyncKeyState((unsigned short)'S') & 0x8000) { MoveOnUserKeyUpdate(player, map_info, f_elapsed_time, CharactorDirection::kBackward); }
+        SetMouseToZero();
+        MoveOnUserMouseUpdate(player);
 
         for (int x = 0; x < screen_width_; x++)
         {   
@@ -114,6 +118,8 @@ ContextState ContextGamePlay::Run()
         map_info.map_[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'.';
     }
 
+
+
 	return ContextState::kContextExit;
 }
 
@@ -126,23 +132,23 @@ void ContextGamePlay::MoveOnUserKeyUpdate(Player& player, MapInfo& map_info, flo
     switch (charactor_direction)
     {
     case CharactorDirection::kForward:
-        player_x_temp = player.x_ + cosf(player.ang_) * 5.0f * elapsed_time;
-        player_y_temp = player.y_ + sinf(player.ang_) * 5.0f * elapsed_time;
+        player_x_temp = player.x_ + cosf(player.ang_) * 3.0f * elapsed_time;
+        player_y_temp = player.y_ + sinf(player.ang_) * 3.0f * elapsed_time;
         break;
 
     case CharactorDirection::kBackward:
-        player_x_temp = player.x_ - cosf(player.ang_) * 5.0f * elapsed_time;
-        player_y_temp = player.y_ - sinf(player.ang_) * 5.0f * elapsed_time;
+        player_x_temp = player.x_ - cosf(player.ang_) * 3.0f * elapsed_time;
+        player_y_temp = player.y_ - sinf(player.ang_) * 3.0f * elapsed_time;
         break;
 
     case CharactorDirection::kLeft:
-        player_x_temp = player.x_ + sinf(player.ang_) * 5.0f * elapsed_time;
-        player_y_temp = player.y_ - cosf(player.ang_) * 5.0f * elapsed_time;
+        player_x_temp = player.x_ + sinf(player.ang_) * 3.0f * elapsed_time;
+        player_y_temp = player.y_ - cosf(player.ang_) * 3.0f * elapsed_time;
         break;
 
     case CharactorDirection::kRight:
-        player_x_temp = player.x_ - sinf(player.ang_) * 5.0f * elapsed_time;
-        player_y_temp = player.y_ + cosf(player.ang_) * 5.0f * elapsed_time;
+        player_x_temp = player.x_ - sinf(player.ang_) * 3.0f * elapsed_time;
+        player_y_temp = player.y_ + cosf(player.ang_) * 3.0f * elapsed_time;
         break;
 
     default:
@@ -154,4 +160,22 @@ void ContextGamePlay::MoveOnUserKeyUpdate(Player& player, MapInfo& map_info, flo
         player.x_ = player_x_temp;
         player.y_ = player_y_temp;
     }
+}
+
+void ContextGamePlay::MoveOnUserMouseUpdate(Player& player)
+{
+    auto [delta_x, delta_y] = mouse_.DetectMouseMovement();
+    player.ang_ += static_cast<float>(delta_x) * 0.003f;
+}
+
+void ContextGamePlay::SetMouseToZero()
+{
+    auto [mouse_x, mouse_y] = mouse_.GetMousePos();
+
+    if (mouse_x > 100 || mouse_x < -100)
+    {
+        mouse_.SetMousePos(1, 1);
+        mouse_.UpdateMousePosInfo();
+    }
+
 }
