@@ -26,6 +26,14 @@ MapCreator::MapCreator(int w, int h) : map_width_(w), map_height_(h)
 	CreateMaze();
 }
 
+void MapCreator::CreateMap(int w, int h)
+{
+	map_width_ = w;
+	map_height_ = h;
+	InitMap();
+	CreateMaze();
+}
+
 void MapCreator::InitMap()
 {
 	for (int row = 0; row < map_height_; row++)

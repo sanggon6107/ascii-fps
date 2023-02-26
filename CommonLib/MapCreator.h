@@ -23,6 +23,7 @@ public :
 	MapCreator(int w, int h);
 	
 	void GetCurrentMapInfo(MapInfo& map_info);
+	void CreateMap(int w, int h);
 private:
 	void InitMap();
 	void CreateMaze();
