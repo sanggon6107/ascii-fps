@@ -191,7 +191,7 @@ void ContextGamePlay::ShowFrame(MapInfo& map_info, Player& player, ScreenMgr& sc
     if (left < 0) left = 0;
     else if (left + 16 > map_info.map_width_ - 1) left = map_info.map_width_ - 17;
 
-    map_info.map_[static_cast<int>(std::round(player.y_)) * map_info.map_width_ + static_cast<int>(std::round(player.x_))] = L'P';
+    map_info.map_[static_cast<int>(std::round(player.y_)) * map_info.map_width_ + static_cast<int>(std::round(player.x_))] = 0x2588;
 
     if (GetAsyncKeyState(VK_TAB) & 0x8000)
     {
