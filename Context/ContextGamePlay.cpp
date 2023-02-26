@@ -165,7 +165,7 @@ void ContextGamePlay::MoveOnUserKeyUpdate(Player& player, MapInfo& map_info, flo
 void ContextGamePlay::MoveOnUserMouseUpdate(Player& player)
 {
     auto [delta_x, delta_y] = mouse_.DetectMouseMovement();
-    player.ang_ += static_cast<float>(delta_x) * 0.003f;
+    player.ang_ += static_cast<float>(delta_x) * 0.001f;
 }
 
 void ContextGamePlay::SetMouseToZero()
