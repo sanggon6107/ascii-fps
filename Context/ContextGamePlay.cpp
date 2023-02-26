@@ -106,19 +106,8 @@ ContextState ContextGamePlay::Run()
                 }
             }
         }
-
-        map_info.map_[static_cast<int>(std::round(player.y_)) * map_info.map_width_ + static_cast<int>(std::round(player.x_))] = L'P';
-        for (int pos = 0; pos < map_info.map_.size(); pos++)
-        {
-            screen_[static_cast<int>(pos / map_info.map_width_) * screen_width_ + pos % map_info.map_width_] = map_info.map_[pos];
-        }
-
-        screen_mgr.Show();
-        map_info.map_[static_cast<int>(std::round(player.y_)) * map_info.map_width_ + static_cast<int>(std::round(player.x_))] = L'.';
+        ShowFrame(map_info, player, screen_mgr);
     }
-
-
-
 	return ContextState::kContextExit;
 }
 
@@ -190,4 +179,38 @@ void ContextGamePlay::InitStage(Player& player, MapInfo& map_info, shared_ptr<Ma
     map_info.map_.clear();
     map_creator->CreateMap(current_stage_ * map_width_unit_, current_stage_ * map_height_unit_);
     map_creator->GetCurrentMapInfo(map_info);
+}
+
+void ContextGamePlay::ShowFrame(MapInfo& map_info, Player& player, ScreenMgr& screen_mgr)
+{
+    int top = static_cast<int>(player.y_) - 8;
+    int left = static_cast<int>(player.x_) - 8;
+
+    if (top < 0) top = 0;
+    else if (top + 16 > map_info.map_height_ - 1) top = map_info.map_height_ - 17;
+    if (left < 0) left = 0;
+    else if (left + 16 > map_info.map_width_ - 1) left = map_info.map_width_ - 17;
+
+    map_info.map_[static_cast<int>(std::round(player.y_)) * map_info.map_width_ + static_cast<int>(std::round(player.x_))] = L'P';
+
+    if (GetAsyncKeyState(VK_TAB) & 0x8000)
+    {
+        for (int pos = 0; pos < map_info.map_.size(); pos++)
+        {
+            screen_[static_cast<int>(pos / map_info.map_width_) * screen_width_ + pos % map_info.map_width_] = map_info.map_[pos];
+        }
+    }
+    else
+    {
+        for (int row = 0; row < 17; row++)
+        {
+            for (int col = 0; col < 17; col++)
+            {
+                screen_[row * screen_width_ + col] = map_info.map_[(row + top) * map_info.map_width_ + (col + left)];
+            }
+        }
+    }
+
+    screen_mgr.Show();
+    map_info.map_[static_cast<int>(std::round(player.y_)) * map_info.map_width_ + static_cast<int>(std::round(player.x_))] = L'.';
 }

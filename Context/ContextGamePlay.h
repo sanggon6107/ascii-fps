@@ -33,6 +33,7 @@ private:
 	void MoveOnUserMouseUpdate(Player& player);
 	void SetMouseToZero();
 	void InitStage(Player& player, MapInfo& map_info, shared_ptr<MapCreator> map_creator);
+	void ShowFrame(MapInfo& map_info, Player& player, ScreenMgr& screen_mgr);
 
 	vector<int> wall_shades_{ 0x2599, 0x2599, 0x256A, 0x253C, 0x253C, 0x250C, 0x250C, 0x2500, 0x2500, 0x2500, 0x2509, 0x2509, 0x2509, 0x2508, 0x2508, 0x2508, 0x2508 };
 	Mouse mouse_;
