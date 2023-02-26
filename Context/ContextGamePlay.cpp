@@ -1,11 +1,10 @@
 #include "ContextGamePlay.h"
 
-ContextGamePlay::ContextGamePlay() : mouse_() {}
+ContextGamePlay::ContextGamePlay() : mouse_(), current_stage_(0), map_width_unit_(17), map_height_unit_(17) {}
 
 ContextState ContextGamePlay::Run()
 {
-    const int map_width = 17;
-    const int map_height = 17;
+    current_stage_ = 0;
 
     constexpr float fov = 3.141592f / 4.0f;
     constexpr float depth = 16.0f;
@@ -13,11 +12,11 @@ ContextState ContextGamePlay::Run()
     auto& screen_mgr = ScreenMgr::GetInstance();
 
     Player player{ .x_ = 1.0f, .y_ = 1.0f, .ang_ = 0.0f };
-
-    std::shared_ptr<MapCreator> map_creator = make_shared<MapCreator>(map_width, map_height);
     MapInfo map_info;
-    map_creator->GetCurrentMapInfo(map_info);
-
+    shared_ptr<MapCreator> map_creator = make_shared<MapCreator>(map_width_unit_, map_height_unit_);
+    
+    InitStage(player, map_info, map_creator);
+    
     auto tp_1 = std::chrono::system_clock::now();
     auto tp_2 = std::chrono::system_clock::now();
 
@@ -28,7 +27,7 @@ ContextState ContextGamePlay::Run()
         tp_1 = tp_2;
         float f_elapsed_time = elapsed_time.count();
 
-        if (round(player.x_) == map_width - 2 && round(player.y_) == map_height - 2) { return ContextState::kContextTitleScreen; }
+        if (round(player.x_) == map_info.map_width_ - 2 && round(player.y_) == map_info.map_height_- 2) { InitStage(player, map_info, map_creator); }
 
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) { return ContextState::kContextTitleScreen; }
 
@@ -62,12 +61,12 @@ ContextState ContextGamePlay::Run()
                 test_y = static_cast<int>(std::round(player.y_ + eye_y * distance_to_wall));
 
 
-                if (test_x < 0 || test_x >= map_width || test_y < 0 || test_y >= map_height)
+                if (test_x < 0 || test_x >= map_info.map_width_ || test_y < 0 || test_y >= map_info.map_height_)
                 {
                     is_hit_wall = true;
                     distance_to_wall = depth;
                 }
-                else if (map_info.map_[test_y * map_width + test_x] == '#')
+                else if (map_info.map_[test_y * map_info.map_width_ + test_x] == '#')
                 {
                     is_hit_wall = true;
 
@@ -108,14 +107,14 @@ ContextState ContextGamePlay::Run()
             }
         }
 
-        map_info.map_[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'P';
+        map_info.map_[static_cast<int>(std::round(player.y_)) * map_info.map_width_ + static_cast<int>(std::round(player.x_))] = L'P';
         for (int pos = 0; pos < map_info.map_.size(); pos++)
         {
-            screen_[static_cast<int>(pos / map_width) * screen_width_ + pos % map_width] = map_info.map_[pos];
+            screen_[static_cast<int>(pos / map_info.map_width_) * screen_width_ + pos % map_info.map_width_] = map_info.map_[pos];
         }
 
         screen_mgr.Show();
-        map_info.map_[static_cast<int>(std::round(player.y_)) * map_width + static_cast<int>(std::round(player.x_))] = L'.';
+        map_info.map_[static_cast<int>(std::round(player.y_)) * map_info.map_width_ + static_cast<int>(std::round(player.x_))] = L'.';
     }
 
 
@@ -178,4 +177,16 @@ void ContextGamePlay::SetMouseToZero()
         mouse_.UpdateMousePosInfo();
     }
 
+}
+
+void ContextGamePlay::InitStage(Player& player, MapInfo& map_info, shared_ptr<MapCreator> map_creator)
+{
+    current_stage_ += 1;
+    
+    player.ang_ = 0.0f;
+    player.x_ = 1.0f;
+    player.y_ = 1.0f;
+
+    map_creator->CreateMap(current_stage_ * map_width_unit_, current_stage_ * map_height_unit_);
+    map_creator->GetCurrentMapInfo(map_info);
 }

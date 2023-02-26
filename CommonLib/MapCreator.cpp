@@ -20,11 +20,7 @@ void MapCreator::Export(wstring& out)
 	}
 }
 
-MapCreator::MapCreator(int w, int h) : map_width_(w), map_height_(h)
-{
-	InitMap();
-	CreateMaze();
-}
+MapCreator::MapCreator(int w, int h) : map_width_(w), map_height_(h) {}
 
 void MapCreator::CreateMap(int w, int h)
 {
@@ -36,6 +32,9 @@ void MapCreator::CreateMap(int w, int h)
 
 void MapCreator::InitMap()
 {
+	visited_.clear();
+	map_.clear();
+
 	for (int row = 0; row < map_height_; row++)
 	{
 		map_.emplace_back(map_width_, L"#");
