@@ -14,6 +14,9 @@
 
 enum class CharactorDirection { kForward, kBackward, kLeft, kRight };
 
+constexpr int kMiniMapWidth = 17;
+constexpr int kMiniMapHeight = 17;
+
 using namespace std;
 
 struct Player

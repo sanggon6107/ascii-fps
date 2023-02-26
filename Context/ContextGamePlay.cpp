@@ -183,13 +183,13 @@ void ContextGamePlay::InitStage(Player& player, MapInfo& map_info, shared_ptr<Ma
 
 void ContextGamePlay::ShowFrame(MapInfo& map_info, Player& player, ScreenMgr& screen_mgr)
 {
-    int top = static_cast<int>(player.y_) - 8;
-    int left = static_cast<int>(player.x_) - 8;
-
+    int top = static_cast<int>(player.y_) - (((kMiniMapHeight + 1) / 2) - 1);
+    int left = static_cast<int>(player.x_) - (((kMiniMapWidth + 1) / 2) - 1);
+    
     if (top < 0) top = 0;
-    else if (top + 16 > map_info.map_height_ - 1) top = map_info.map_height_ - 17;
+    else if (top + 16 > map_info.map_height_ - 1) top = map_info.map_height_ - kMiniMapHeight;
     if (left < 0) left = 0;
-    else if (left + 16 > map_info.map_width_ - 1) left = map_info.map_width_ - 17;
+    else if (left + 16 > map_info.map_width_ - 1) left = map_info.map_width_ - kMiniMapWidth;
 
     map_info.map_[static_cast<int>(std::round(player.y_)) * map_info.map_width_ + static_cast<int>(std::round(player.x_))] = 0x2588;
 
@@ -202,9 +202,9 @@ void ContextGamePlay::ShowFrame(MapInfo& map_info, Player& player, ScreenMgr& sc
     }
     else
     {
-        for (int row = 0; row < 17; row++)
+        for (int row = 0; row < kMiniMapHeight; row++)
         {
-            for (int col = 0; col < 17; col++)
+            for (int col = 0; col < kMiniMapWidth; col++)
             {
                 screen_[row * screen_width_ + col] = map_info.map_[(row + top) * map_info.map_width_ + (col + left)];
             }
