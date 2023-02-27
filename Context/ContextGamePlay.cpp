@@ -160,9 +160,9 @@ void ContextGamePlay::SetMouseToZero()
 {
     auto [mouse_x, mouse_y] = mouse_.GetMousePos();
 
-    if (mouse_x > 100 || mouse_x < -100)
+    if (mouse_x > 100 || mouse_x < 30 || mouse_y > 100 || mouse_y < 30)
     {
-        mouse_.SetMousePos(1, 1);
+        mouse_.SetMousePos(70, 50);
         mouse_.UpdateMousePosInfo();
     }
 
