@@ -6,7 +6,7 @@
 
 소스코드를 작성하면서 게임, 특히 그래픽스 분야가 고도의 수학적 지식이 필요한 분야라는 인상을 받았다. 왜냐하면 평면 모니터 상에 3차원의 공간을 담으려면 물체의 거리와 각도에 따라 그 물체가 어떤 형상으로 보일지를 모두 계산해내야 하기 때문이다.
 
-프로그램은 기본적으로 게임의 문맥(Context)들과 각 문맥들이 활용하는 CommonLib로 구성 되어 있으며, 싱글톤과 팩토리 패턴 등의 디자인 패턴이 활용되었다.
+프로그램은 기본적으로 게임의 문맥(Context)들과 각 문맥들이 활용하는 CommonLib로 구성 되어 있으며, 싱글톤과 팩토리 패턴 등의 디자인 패턴이 활용되었다. naming convention은 Google C++ style guide를 따랐다.
 
 미로는 새 게임이 시작될 때마다 랜덤으로 생성되고, 랜덤 미로를 생성하기 위해 Hunt and kill algorithm이 사용 되었다. 다른 알고리즘도 있지만 예전에 공부했던 적이 있기 때문에 굳이 다른 방식은 찾아보지 않았다.
 
@@ -14,7 +14,7 @@
 
 한편 몇몇 줄의 코드는 더 나은 코드를 고민할 거리가 되기도 했는데, 가령 벽의 바운더리를 그리는 알고리즘은 참고가 된 영상의 방법이 너무 복잡한데다가 항상 완벽하게 화면상의 바운더리를 잡아주지는 못한다는 단점도 가지고 있었기 때문에, 후술할 몇번의 시행착오를 거쳐 현재의 간단하면서도 비교적으로 안정적인 형태가 되었다.
 
-![gameplay](./Media/gameplay.gif)
+![gameplay](./Media/game_play.gif)
 
 ## 2. <b>조작법</b>
 
@@ -23,6 +23,8 @@
 게임이 시작되면 W/S/A/D로 캐릭터를 이동할 수 있고, 마우스로 시선을 회전 시킬 수 있다.
 
 스테이지가 지남에 따라 미로는 점점 더 커지기 때문에, 미니맵에 맵의 전체 정보가 담기지 않는다. 캐릭터를 중심으로 미니맵의 크기만큼 출력이 되고, TAB 키를 누르고 있으면 full size의 맵을 볼 수 있다.
+
+![minimap](./Media/mini_map.gif)
 
 게임을 도중에 끝내고 싶으면 ESC 키를 누르면 된다. 다만, 게임을 도중에 종료하고 다시 시작하면 첫 스테이지부터 다시 시작해야 한다.
 
@@ -38,12 +40,13 @@ void Game::Launch()
 	auto& factory = ContextFactory::GetInstance();
 	for (int state = 0; state < static_cast<int>(ContextState::kContextStateMaxSize); state++)
 	{
+		// 등록되어 있는 모든 제품을 생산해서 context_에 넣는다.
 		context_.push_back(factory.CreateContext(static_cast<ContextState>(state)));
 	}
 
 	ContextState state = ContextState::kContextTitleScreen;
 	do// 프로그램 종료(kContextExit)가 선택될 때까지 do-while 루프를 돌며
-	  //유저에 의해 선택된 Context의 Run() 함수 호출
+	  // 유저에 의해 선택된 Context의 Run() 함수 호출
 	{
 		state = context_[static_cast<int>(state)]->Run();
 	} while (state != ContextState::kContextExit); 
@@ -96,7 +99,7 @@ public:
 };
 ```
 
-각 컨텍스트 구현 시 공장에 자동 등록 및 객체 생성을 하기 위해 필요한 코드는 아래와 같이 매크로로 작성하였다. 각 Context에서는 아래의 코드를 그대로 가져와 쓰기만 하면 별다른 코드 수정을 하지 않아도 Game 클래스가 그 제품(Context)을 벡터에 담고 있을 것이다.
+각 컨텍스트 구현 시 공장에 자동 등록 및 객체 생성을 하기 위해 필요한 코드는 아래와 같이 매크로로 작성하였다. 각 Context에서는 아래의 코드를 그대로 가져와 쓰기만 하면 별다른 코드 수정을 하지 않아도 Game 클래스가 그 제품(Context)을 context_ 벡터에 담고 있을 것이다.
 ```c++
 #define DECLARE_CONTEXT_FACTORY(class_name)								   \
 public:																	   \
