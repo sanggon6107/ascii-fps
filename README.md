@@ -193,10 +193,19 @@ test_x = static_cast<int>(std::round(player.x_ + eye_x * distance_to_wall));
 test_y = static_cast<int>(std::round(player.y_ + eye_y * distance_to_wall));
 
 //따라서 픽셀의 좌표와 벽의 중심의 거리가 1/sqrt(2)이면 바운더리이다.
-1/sqrt(2) = sqrt(pow(text_x - wall_pos_x, 2) - pow(test_y - wall_pos_y, 2));
+1/sqrt(2) = sqrt(pow((double)test_x - wall_pos_x, 2) - pow((double)test_y - wall_pos_y, 2));
+```
+다만, 실제로는 정확히 1/sqrt(2)일 수 없고, 1/sqrt(2) == 0.70710... 이므로 아래의 수식을 사용하였다.
+
+```c++
+
+double distance_wall_core_wall_pos = sqrt(pow(static_cast<double>(test_x) - wall_pos_x, 2) + pow(static_cast<double>(test_y) - wall_pos_y, 2));
+if (distance_wall_core_wall_pos > 0.60) is_boundary = true;
 ```
 
 하지만 위 방법대로 구현했더니 다른 문제가 생겼다. 바운더리의 개수는 정확하게 시선에 맞게 처리가 되지만, 여전히 많은 변수를 수식에 집어 넣다 보니 바운더리의 두께가 상당히 불안정해서, 캐릭터가 회전하거나 조금이라도 움직이면 벽과 바운더리가 마치 춤을 추듯 진동하는 것이었다. 훨씬 더 간단한 방법을 찾아야 했다.
+
+![unstable_boundary](./Media/unstable_boundary.gif)
 
 고민 끝에 가장 간단한 방법을 찾아냈는데, 그 방법은 아래와 같다.
 ```c++
@@ -205,6 +214,8 @@ double wall_pos_y_tenths = abs(wall_pos_y - round(wall_pos_y));
 if (wall_pos_x_tenths > 0.4 && wall_pos_y_tenths > 0.4) is_boundary = true;
 ```
 
-지금까지 생각했던 벽(#)의 위치는 정확하게 소수점이 0이 되는 점이다. 즉, 정수 좌표에 #이 고정되어 있다. 그렇다면 #과 #의 사이는 0.5 단위일 테니, 대충 #으로부터 x좌표와 y좌표가 0.4 이상 떨어져 있기만 하면 그 점은 바운더리일 것이다.
+지금까지 생각했던 벽(#)의 위치는 정확하게 소수점이 0이 되는 점이다. 즉, 정수 좌표에 #이 고정되어 있다. 그렇다면 #과 #의 사이는 0.5 단위일 테니, 대충 #으로부터 x좌표와 y좌표가 0.4 이상 떨어져 있기만 하면 그 점은 바운더리일 것이다.  결과는 아래의 그림과 같다.
+
+![stable_boundary](./Media/stable_boundary.gif)
 
 이 방법은 어떤 수를 빼서 재곱을 하고 다시 루트를 씌우지도 않고, 참고 영상에서 처럼 보이지도 않아서 계산할 필요도 없는 모서리를 계산해낼 필요도, 보일 모서리를 계산하기 위해 모든 모서리를 구한 다음 정렬 함수를 호출할 필요도 없다. 그냥 소수점 첫째 자리가 정수로부터 0.4~0.5만큼 떨어져 있기만 하면 된다. 이렇게 해서 지금의 바운더리 표현이 완성 되었다.
