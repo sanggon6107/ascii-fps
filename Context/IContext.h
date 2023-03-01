@@ -13,15 +13,15 @@
 
 
 using namespace std;
-typedef unique_ptr<IContext>(*CREATOR)();
+typedef shared_ptr<IContext>(*CREATOR)();
 
 class ContextFactory
 {
 	MAKE_SINGLETON(ContextFactory)
 public:
-	unique_ptr<IContext> CreateContext(ContextState context_state)
+	shared_ptr<IContext> CreateContext(ContextState context_state)
 	{
-		unique_ptr<IContext> ptr = nullptr;
+		shared_ptr<IContext> ptr = nullptr;
 		auto ret = create_map_.find(context_state);
 
 		if (ret == create_map_.end()) return nullptr;

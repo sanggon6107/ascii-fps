@@ -12,8 +12,10 @@ using namespace std;
 class Game
 {
 public :
+	Game();
 	void Launch();
 private :
-	vector<unique_ptr<IContext>> context_;
+	vector<shared_ptr<IContext>> context_;
+	shared_ptr<IContext> current_context_state_;
 };
 

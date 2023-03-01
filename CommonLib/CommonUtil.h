@@ -19,12 +19,12 @@ public :										 \
 		return instance;						 \
 	}											 
 
-#define DECLARE_CONTEXT_FACTORY(class_name)								   \
-public:																	   \
-	static unique_ptr<IContext> Create() { return make_unique<class_name>(); } \
+#define DECLARE_CONTEXT_FACTORY(class_name)								       \
+public:																  	       \
+	static shared_ptr<IContext> Create() { return make_shared<class_name>(); } \
 	static FactoryRegister rs;
 
-#define IMPLEMENT_CONTEXT_FACTORY(context_state, class_name)			   \
+#define IMPLEMENT_CONTEXT_FACTORY(context_state, class_name)			       \
 FactoryRegister class_name::rs(context_state, &class_name::Create);
 
 

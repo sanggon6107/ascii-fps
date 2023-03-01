@@ -1,18 +1,24 @@
 #include "Game.h"
 
-void Game::Launch()
+Game::Game()
 {
 	auto& factory = ContextFactory::GetInstance();
 	for (int state = 0; state < static_cast<int>(ContextState::kContextStateMaxSize); state++)
 	{
 		context_.push_back(factory.CreateContext(static_cast<ContextState>(state)));
 	}
+	current_context_state_ = context_[static_cast<int>(ContextState::kContextTitleScreen)];
+}
 
-	ContextState state = ContextState::kContextTitleScreen;
+
+void Game::Launch()
+{
+	ContextState next_state;
 	do
 	{
-		state = context_[static_cast<int>(state)]->Run();
-	} while (state != ContextState::kContextExit);
+		next_state = current_context_state_->Run();
+		current_context_state_ = context_[static_cast<int>(next_state)];
+	} while (next_state != ContextState::kContextExit);
 }
 
 
