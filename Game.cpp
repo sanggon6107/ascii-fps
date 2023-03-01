@@ -13,11 +13,11 @@ Game::Game()
 
 void Game::Launch()
 {
-	ContextState next_state;
+	ContextState next_state = ContextState::kContextTitleScreen;
 	do
 	{
-		next_state = current_context_state_->Run();
 		current_context_state_ = context_[static_cast<int>(next_state)];
+		next_state = current_context_state_->Run();
 	} while (next_state != ContextState::kContextExit);
 }
 
