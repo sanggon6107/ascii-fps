@@ -6,13 +6,13 @@
 
 소스코드를 작성하면서 게임, 특히 그래픽스 분야가 고도의 수학적 지식이 필요한 분야라는 인상을 받았다. 왜냐하면 평면 모니터 상에 3차원의 공간을 담으려면 물체의 거리와 각도에 따라 그 물체가 어떤 형상으로 보일지를 모두 계산해내야 하기 때문이다.
 
-프로그램은 기본적으로 게임의 문맥(Context)들과 각 문맥들이 활용하는 CommonLib로 구성 되어 있으며, 싱글톤과 팩토리 패턴 등의 디자인 패턴이 활용되었다. naming convention은 Google C++ style guide를 따랐다.
+프로그램은 기본적으로 게임의 문맥(Context)들과 각 문맥들이 활용하는 CommonLib로 구성 되어 있으며, 싱글톤과 팩토리 패턴, State 패턴 등의 디자인 패턴이 활용되었다. naming convention은 Google C++ style guide를 따랐다.
 
 미로는 새 게임이 시작될 때마다 랜덤으로 생성되고, 랜덤 미로를 생성하기 위해 Hunt and kill algorithm이 사용 되었다. 다른 알고리즘도 있지만 이 알고리즘을 예전에 공부했던 적이 있기 때문에 굳이 다른 방식은 찾아보지 않았다.
 
-게임은 미로의 끝(미니맵의 최우하단)에 다다르면 다음 스테이지로 넘어가게 되어 있고, 미로 사이즈는 스테이지를 넘어감에 따라 더 커진다. 다만 미로가 커지더라도 미니맵은 17x17 사이즈로 고정되어 있고 플레이어를 중심으로 움직인다. TAB키를 누르고 있는 동안은 맵이 확대 되어 full size의 맵을 볼 수 있도록 구현했다.
+게임은 미로의 끝(미니맵의 최우하단)에 다다르면 다음 스테이지로 넘어가게 되어 있고, 미로 사이즈는 스테이지를 넘어감에 따라 더 커진다. 다만 미로가 커지더라도 미니맵은 17x17 사이즈로 고정되어 있고 플레이어를 중심으로 움직인다. TAB키를 누르고 있는 동안은 맵이 확대 되어 full size의 맵을 볼 수 있도록 구현했다. (2. 조작법 참조)
 
-한편 몇몇 줄의 코드는 더 나은 코드를 고민할 거리가 되기도 했는데, 가령 벽의 바운더리를 그리는 알고리즘은 참고가 된 영상의 방법이 너무 복잡한데다가 항상 완벽하게 화면상의 바운더리를 잡아주지는 못한다는 단점도 가지고 있었기 때문에, 후술할 몇번의 시행착오를 거쳐 현재의 간단하면서도 비교적으로 안정적인 형태가 되었다.
+한편 몇몇 줄의 코드는 더 나은 코드를 고민할 거리가 되기도 했는데, 가령 벽의 바운더리를 그리는 알고리즘은 참고가 된 영상의 방법이 너무 복잡한데다가 항상 완벽하게 화면상의 바운더리를 잡아주지는 못한다는 단점도 가지고 있었기 때문에, 후술할 몇번의 시행착오를 거쳐 현재의 코드 처럼 간단하면서도 비교적으로 안정적인 형태가 되었다.
 
 ![gameplay](./Media/game_play.gif)
 
@@ -32,10 +32,10 @@
 
 ### <b>3-1. Game 클래스</b>
 
-최상위 클래스는 Game이다. Game은 (게임 플레이, 타이틀 화면 등과 같은) Context를 ContextFactory로부터 생성하여 가지고 있으며, Launch() 함수는 팩토리로부터 Context 객체를 받아 실제로 실행시키는 역할을 한다.
+최상위 클래스는 Game이다. Game은 (게임 플레이, 타이틀 화면 등과 같은) Context를 ContextFactory로부터 생성하여 가지고 있으며, Launch() 함수는 팩토리로부터 current_context_state_에 맞는 Context를 실제로 실행(Run)시키는 역할을 한다.
 
 ```c++
-void Game::Launch()
+Game::Game()
 {
 	auto& factory = ContextFactory::GetInstance();
 	for (int state = 0; state < static_cast<int>(ContextState::kContextStateMaxSize); state++)
@@ -43,13 +43,22 @@ void Game::Launch()
 		// 등록되어 있는 모든 제품을 생산해서 context_에 넣는다.
 		context_.push_back(factory.CreateContext(static_cast<ContextState>(state)));
 	}
+	current_context_state_ = context_[static_cast<int>(ContextState::kContextTitleScreen)];
+}
+```
 
-	ContextState state = ContextState::kContextTitleScreen;
-	do// 프로그램 종료(kContextExit)가 선택될 때까지 do-while 루프를 돌며
-	  // 유저에 의해 선택된 Context의 Run() 함수 호출
+```c++
+void Game::Launch()
+{
+	// 프로그램 종료(kContextExit)가 선택될 때까지 do-while 루프를 돌며
+	// 유저에 의해 선택된 Context의 Run() 함수 호출
+	ContextState next_state = ContextState::kContextTitleScreen;
+	do
 	{
-		state = context_[static_cast<int>(state)]->Run();
-	} while (state != ContextState::kContextExit); 
+		current_context_state_ = context_[static_cast<int>(next_state)];
+		next_state = current_context_state_->Run();
+	} while (next_state != ContextState::kContextExit);
+}
 ```
 
 ### <b>3-2. ContextFactory 클래스와 팩토리 패턴의 구현</b>
@@ -147,7 +156,7 @@ if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 설명하고 싶은 것이 많지만 README에서는 지면 관계상 이 프로그램의 가장 핵심적인 기능 중 하나인 Raycasting에 대해서 설명한다. 이 프로그램에 쓰인 Raycasting 기법은 "Wolfenstein(울펜슈타인)"에서 구현된 방법과 같으며, field of view(FOV, 이 프로그램에서는 pi/4로 고정 되어 있다.)를 스크린의 Width 개수 만금 쪼갠 다음 거리를 계산하고 픽셀 하나 하나를 그려나간다. Raycasting이 실행 되는 과정은 아래와 같다.
 
 1. FOV를 Screen width만큼 쪼갠다. 즉, 이 프로그램에서는 ( FOV / screen width)가 픽셀 한 컬럼이 된다. 이 세분화된 각도를 ray_angle 이라는 이름의 변수로 두었다.
-2. ray_angle을 cos/sin의 Unit vector로 eye_x, eye_y로 둔다.
+2. ray_angle의 cos/sin Unit vector로 eye_x, eye_y를 둔다.
 3. 플레이어의 위치에서 eye_x, eye_y만큼 점점 멀리 이동시켜 보면서 distance_to_wall을 계산한다. 마침내 벽에 부딪히면 해당 ray_angle에서는 distance_to_wall만큼 플레이어로부터 벽의 거리가 있다고 간주한다. 만약 최대 깊이인 depth까지도 벽에 도달하지 못하면 distance_to_wall은 depth로 한다.
 4. distance_to_wall에 따라 바닥면과 천장면의 높이를 계산한다. 벽이 멀리 있으면 멀리 있을수록 천장과 바닥은 화면의 가운데(screen height의 가운데)로 오게 되고, 벽이 가까이 있으면 가까이 있을 수록 벽이 크고 바닥면과 천장은 보이지 않게 된다.
 5. distance_to_wall에 따라 shade를 고른다. 멀리 있을 수록 연한 색의 유니 코드 문자로 출력한다.
