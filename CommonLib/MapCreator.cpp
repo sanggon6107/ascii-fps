@@ -115,8 +115,8 @@ tuple<int, int> MapCreator::Hunt()
 			{
 				int h_temp = h + h_delta_[dir];
 				int w_temp = w + w_delta_[dir];
-				if (w_temp <= 0 || w_temp >= map_width_ - 2)  continue;
-				if (h_temp <= 0 || h_temp >= map_height_ - 2)  continue;
+				if (w_temp <= 0 || w_temp >= map_width_ - 1)  continue;
+				if (h_temp <= 0 || h_temp >= map_height_ - 1)  continue;
 				if (visited_[h_temp][w_temp] == false) continue;
 				
 				map_[h + (h_delta_[dir] / 2)][w + (w_delta_[dir] / 2)] = L".";

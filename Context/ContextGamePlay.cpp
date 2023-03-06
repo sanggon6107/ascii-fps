@@ -177,7 +177,7 @@ void ContextGamePlay::InitStage(Player& player, MapInfo& map_info, shared_ptr<Ma
     player.y_ = 1.0f;
 
     map_info.map_.clear();
-    map_creator->CreateMap(current_stage_ * map_width_unit_, current_stage_ * map_height_unit_);
+    map_creator->CreateMap(map_width_unit_ + ((current_stage_ - 1 ) * 10), map_height_unit_ + ((current_stage_ - 1) * 10));
     map_creator->GetCurrentMapInfo(map_info);
 }
 
